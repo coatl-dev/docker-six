@@ -4,11 +4,11 @@ Docker image with Python 2 and 3 pre-installed with [`pyenv`] using Ubuntu 22.04
 
 ## Supported tags
 
-- `3.10.11b1` - Comes with Python 3.10.11 and 2.7.18.
+- `3.10.11` - Comes with Python 3.10.11 and 2.7.18.
 
 ## How to use this image
 
-The examples below will demonstrate how to use this image in [Azure pipelines], and [GitHub workflows].
+The examples below will demonstrate how to use this image in [Azure Pipelines], and [GitHub Workflows].
 
 ### Azure Pipelines
 
@@ -20,7 +20,7 @@ jobs:
       vmImage: ubuntu-latest
 
     container:
-      image: coatldev/six:3.10.11b1
+      image: coatldev/six:3.10.11
 
     steps:
       - script: |
@@ -47,15 +47,16 @@ jobs:
   tox:
     runs-on: ubuntu-latest
     container:
-      image: coatldev/six:3.10.11b1
+      image: coatldev/six:3.10.11
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Install dependencies
+      # Ref: https://github.com/actions/runner/issues/652
+      - name: Install dependencies (with no caching)
         run: |
-          python -m pip install --upgrade pip tox
+          python -m pip install --no-cache-dir --upgrade pip tox
 
       - name: Run tests
         run: |
@@ -67,6 +68,6 @@ jobs:
 Based on [vicamo/docker-pyenv/jammy/slim].
 
 [`pyenv`]: https://github.com/pyenv/pyenv
-[Azure pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
-[GitHub workflows]: https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
+[Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
+[GitHub Workflows]: https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
 [vicamo/docker-pyenv/jammy/slim]: https://github.com/vicamo/docker-pyenv/blob/259cc288f846c07dee6d8ed7790cf86be4aaa3d1/jammy/slim/Dockerfile
