@@ -1,0 +1,19 @@
+ci:
+  autoupdate_commit_msg: 'build(deps): pre-commit autoupdate'
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/python-jsonschema/check-jsonschema.git
+    rev: 0.23.1
+    hooks:
+    - id: check-github-workflows
+      name: check github workflows
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: 3.2.2
+    hooks:
+    - id: commitizen
