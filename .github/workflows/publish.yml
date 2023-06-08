@@ -33,4 +33,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/six:${{ env.TAG }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/six:${{ env.TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/six:latest
