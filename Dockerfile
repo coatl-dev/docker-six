@@ -77,7 +77,7 @@ RUN set -eux; \
 
 FROM builder AS build-all
 
-ARG PYTHON_VERSIONS="2.7.18 3.10.11"
+ARG PYTHON_VERSIONS="2.7.18 3.10.12"
 ARG ALLOW_FAILURES=
 
 # install python versions

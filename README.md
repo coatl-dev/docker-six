@@ -4,6 +4,7 @@ Docker image with Python 2 and 3 pre-installed with [`pyenv`] using Ubuntu 22.04
 
 ## Supported tags
 
+- `3.10.12`, `latest` - Comes with Python 3.10.12 and 2.7.18.
 - `3.10.11` - Comes with Python 3.10.11 and 2.7.18.
 
 ## How to use this image
@@ -20,7 +21,7 @@ jobs:
       vmImage: ubuntu-latest
 
     container:
-      image: coatldev/six:3.10.11
+      image: coatldev/six:3.10.12
 
     steps:
       - script: |
@@ -47,7 +48,7 @@ jobs:
   tox:
     runs-on: ubuntu-latest
     container:
-      image: coatldev/six:3.10.11
+      image: coatldev/six:3.10.12
 
     steps:
       - name: Checkout repo
