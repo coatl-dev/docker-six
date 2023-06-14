@@ -20,16 +20,11 @@ jobs:
     pool:
       vmImage: ubuntu-latest
 
-    container:
-      image: coatldev/six:3.10.12
+    container: coatldev/six:latest
 
     steps:
       - script: |
-          echo '##vso[task.prependpath]/home/vsts_azpcontainer/.local/bin'
-        displayName: Modify PATH
-
-      - script: |
-          sudo chown -R vsts_azpcontainer:azure_pipelines_sudo /opt/pyenv
+          sudo chown -R $(whoami):$(id -ng) "${PYENV_ROOT}"
         displayName: Change owner
 
       - script: |
@@ -46,9 +41,10 @@ jobs:
 ```yml
 jobs:
   tox:
+
     runs-on: ubuntu-latest
-    container:
-      image: coatldev/six:3.10.12
+
+    container: coatldev/six:latest
 
     steps:
       - name: Checkout repo
