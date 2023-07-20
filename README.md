@@ -1,6 +1,10 @@
+[![Lint Dockerfile](https://github.com/coatl-dev/docker-six/actions/workflows/main.yml/badge.svg)](https://github.com/coatl-dev/docker-six/actions/workflows/main.yml)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/coatl-dev/docker-six/coatl.svg)](https://results.pre-commit.ci/latest/github/coatl-dev/docker-six/coatl)
+![Docker Pulls](https://img.shields.io/docker/pulls/coatldev/six)
+
 # coatldev/six
 
-Docker image with Python 2 and 3 pre-installed with [`pyenv`] using Ubuntu 22.04 (Jammy Jellyfish).
+Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and 3.10 pre-installed.
 
 ## Supported tags
 
@@ -24,7 +28,7 @@ jobs:
 
     steps:
       - script: |
-          sudo chown -R $(whoami):$(id -ng) "${PYENV_ROOT}"
+          sudo chown -R $(whoami):$(id -ng) "${PYTHON_ROOT}"
         displayName: Change owner
 
       - script: |
@@ -62,9 +66,12 @@ jobs:
 
 ## Source of inspiration
 
-Based on [vicamo/docker-pyenv/jammy/slim].
+Based on the [Docker "Official Image"] for [`python`] using the following `Dockerfile`s:
 
-[`pyenv`]: https://github.com/pyenv/pyenv
+- `2.7/buster/slim`: <https://github.com/docker-library/python/blob/f1e613f48eb4fc88748b36787f5ed74c14914636/2.7/buster/slim/Dockerfile>
+- `3.10/slim-bullseye`: <https://github.com/docker-library/python/blob/HEAD/3.10/slim-bullseye/Dockerfile>
+
 [Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
 [GitHub Workflows]: https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
-[vicamo/docker-pyenv/jammy/slim]: https://github.com/vicamo/docker-pyenv/blob/259cc288f846c07dee6d8ed7790cf86be4aaa3d1/jammy/slim/Dockerfile
+[Docker "Official Image"]: https://github.com/docker-library/official-images#what-are-official-images
+[`python`]: https://hub.docker.com/_/python/
