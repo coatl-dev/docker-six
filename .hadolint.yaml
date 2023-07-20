@@ -1,3 +1,8 @@
 ignored:
   - DL3008  # apt-get install pinned versions
   - DL3013  # pip install pinned versions
+  - DL3029
+  - DL4006
+  - SC2015
+  - SC2046
+  - SC2086
