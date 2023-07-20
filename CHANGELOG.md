@@ -1,3 +1,13 @@
+## Unreleased
+
+### BREAKING CHANGE
+
+- drop dependency on pyenv
+
+### Refactor
+
+- **dockerfile**: base dockerfile on python official images (#8)
+
 ## v3.10.12 (2023-06-08)
 
 ### Feat
