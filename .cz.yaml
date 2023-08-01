@@ -2,6 +2,6 @@
 commitizen:
   gpg_sign: true
   name: cz_conventional_commits
-  tag_format: v$version
+  tag_format: $version
   update_changelog_on_bump: true
   version: 3.10.12
