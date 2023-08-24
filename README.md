@@ -8,7 +8,8 @@ Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and 3.10 pr
 
 ## Supported tags
 
-- `3.10.12`, `latest` - Comes with Python 3.10.12 and 2.7.18.
+- `3.10.13`, `latest` - Comes with Python 3.10.13 and 2.7.18.
+- `3.10.12` - Comes with Python 3.10.12 and 2.7.18.
 - `3.10.11` - Comes with Python 3.10.11 and 2.7.18.
 
 ## How to use this image
