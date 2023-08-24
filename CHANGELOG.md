@@ -1,8 +1,12 @@
-## Unreleased
+## 3.10.13 (2023-08-24)
 
 ### BREAKING CHANGE
 
 - drop dependency on pyenv
+
+### Feat
+
+- **python3**: update to 3.10.13 (#13)
 
 ### Refactor
 
