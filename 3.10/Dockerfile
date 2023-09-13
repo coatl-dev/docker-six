@@ -17,9 +17,10 @@ ENV PIP_NO_PYTHON_VERSION_WARNING 1
 ENV PIP_ROOT_USER_ACTION ignore
 
 # python
+ARG PYTHON310_VERSION
 ENV PYTHON_ROOT /opt/python
 ENV PYTHON2_VERSION 2.7.18
-ENV PYTHON3_VERSION 3.10.13
+ENV PYTHON3_VERSION ${PYTHON310_VERSION}
 
 # base dependencies
 RUN set -eux; \
@@ -81,7 +82,7 @@ RUN set -eux; \
 
 # > =============================================================== <
 
-FROM builder AS python27
+FROM builder AS python2
 
 WORKDIR /tmp
 
@@ -97,7 +98,7 @@ RUN set -eux; \
     gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
     ./configure \
         --build="$gnuArch" \
-        --prefix="${PYTHON_ROOT}/2.7/" \
+        --prefix="${PYTHON_ROOT}/2/" \
         --enable-optimizations \
         --enable-option-checking=fatal \
         --enable-shared \
@@ -155,11 +156,11 @@ RUN set -eux; \
 # update Pip, Setuptools and Wheel packages
 RUN set -eux; \
     \
-    "${PYTHON_ROOT}/2.7/bin/python2.7" -m ensurepip --default-pip; \
-    "${PYTHON_ROOT}/2.7/bin/python2.7" -m pip install --upgrade pip setuptools wheel
+    "${PYTHON_ROOT}/2/bin/python2.7" -m ensurepip --default-pip; \
+    "${PYTHON_ROOT}/2/bin/python2.7" -m pip install --upgrade pip setuptools wheel
 
 # add some soft links for comfortable usage
-WORKDIR "${PYTHON_ROOT}/2.7/bin"
+WORKDIR "${PYTHON_ROOT}/2/bin"
 RUN set -eux; \
     \
     ln -s idle idle2; \
@@ -169,7 +170,7 @@ RUN set -eux; \
 
 # > =============================================================== <
 
-FROM builder AS python310
+FROM builder AS python3
 
 WORKDIR /tmp
 
@@ -185,7 +186,7 @@ RUN set -eux; \
     gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
     ./configure \
         --build="$gnuArch" \
-        --prefix="${PYTHON_ROOT}/3.10/" \
+        --prefix="${PYTHON_ROOT}/3/" \
         --enable-loadable-sqlite-extensions \
         --enable-optimizations \
         --enable-option-checking=fatal \
@@ -224,10 +225,10 @@ RUN set -eux; \
 # update Pip, Setuptools and Wheel packages
 RUN set -eux; \
     \
-    "${PYTHON_ROOT}/3.10/bin/python3.10" -m pip install --upgrade pip setuptools wheel
+    "${PYTHON_ROOT}/3/bin/python3.10" -m pip install --upgrade pip setuptools wheel
 
 # add some soft links for comfortable usage
-WORKDIR "${PYTHON_ROOT}/3.10/bin"
+WORKDIR "${PYTHON_ROOT}/3/bin"
 RUN set -eux; \
     \
     ln -s idle3.10 idle3; \
@@ -241,11 +242,11 @@ RUN set -eux; \
 
 FROM base AS final
 
-COPY --from=python27 ${PYTHON_ROOT}/2.7/ ${PYTHON_ROOT}/2.7/
-COPY --from=python310 ${PYTHON_ROOT}/3.10/ ${PYTHON_ROOT}/3.10/
+COPY --from=python2 ${PYTHON_ROOT}/2/ ${PYTHON_ROOT}/2/
+COPY --from=python3 ${PYTHON_ROOT}/3/ ${PYTHON_ROOT}/3/
 
 # ensure local python is preferred over distribution python
-ENV PATH ${PYTHON_ROOT}/3.10/bin:${PYTHON_ROOT}/2.7/bin:$PATH
+ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH
 
 # git config "hack"
 RUN set -eux; \
