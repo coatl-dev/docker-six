@@ -1,3 +1,15 @@
+## 3.11.5 (2023-09-13)
+
+### Feat
+
+- **python3**: add Python 3.11.5 (#19)
+
+### Refactor
+
+- **workflows**: use current directory as reference for context arg (#21)
+- **dockerfile**: remove __VERSION__ files and ARG from Dockerfiles (#20)
+- prepare repo for 3.11 and 3.12 (#18)
+
 ## 3.10.13 (2023-08-24)
 
 ### BREAKING CHANGE
