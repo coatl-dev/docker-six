@@ -1,4 +1,4 @@
-name: Lint Dockerfile
+name: Lint Dockerfiles
 
 on:
   workflow_dispatch:
@@ -16,3 +16,6 @@ jobs:
 
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v3.1.0
+        with:
+          recursive: true
+          verbose: true

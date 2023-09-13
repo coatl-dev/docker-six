@@ -1,3 +1,2 @@
 ignored:
   - DL3008  # apt-get install pinned versions
-  - DL3013  # pip install pinned versions
