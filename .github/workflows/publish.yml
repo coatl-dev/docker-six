@@ -28,7 +28,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ${{ steps.dockerfile.outputs.subdir }}
+          context: ./${{ steps.dockerfile.outputs.subdir }}
           platforms: |
             linux/amd64
             linux/arm64
