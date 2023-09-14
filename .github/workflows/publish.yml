@@ -31,7 +31,6 @@ jobs:
           context: ./${{ steps.dockerfile.outputs.subdir }}
           platforms: |
             linux/amd64
-            linux/arm64
           push: true
           tags: |
             coatldev/six:${{ github.event.release.tag_name }}
