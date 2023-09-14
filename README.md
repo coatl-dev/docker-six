@@ -4,10 +4,12 @@
 
 # coatldev/six
 
-Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and 3.10 pre-installed.
+Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and Python 3 pre-installed.
 
 ## Supported tags
 
+- `3.12`, `3.12.0rc2` - Comes with Python 3.12.0rc2 and 2.7.18.
+- `3.11`, `3.11.5` - Comes with Python 3.11.5 and 2.7.18.
 - `3.10.13`, `latest` - Comes with Python 3.10.13 and 2.7.18.
 - `3.10.12` - Comes with Python 3.10.12 and 2.7.18.
 - `3.10.11` - Comes with Python 3.10.11 and 2.7.18.
@@ -25,7 +27,7 @@ jobs:
     pool:
       vmImage: ubuntu-latest
 
-    container: coatldev/six:latest
+    container: coatldev/six:3.11
 
     steps:
       - script: |
@@ -49,7 +51,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container: coatldev/six:latest
+    container: coatldev/six:3.11
 
     steps:
       - name: Checkout repo
@@ -71,6 +73,8 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 
 - `2.7/buster/slim`: <https://github.com/docker-library/python/blob/f1e613f48eb4fc88748b36787f5ed74c14914636/2.7/buster/slim/Dockerfile>
 - `3.10/slim-bullseye`: <https://github.com/docker-library/python/blob/HEAD/3.10/slim-bullseye/Dockerfile>
+- `3.11/slim-bullseye`: <https://github.com/docker-library/python/blob/HEAD/3.10/slim-bullseye/Dockerfile>
+- `3.12-rc/slim-bullseye`: <https://github.com/docker-library/python/blob/HEAD/3.12-rc/slim-bullseye/Dockerfile>
 
 [Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
 [GitHub Workflows]: https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
