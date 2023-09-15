@@ -18,6 +18,6 @@ repos:
     hooks:
       - id: hadolint
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: 3.8.2
+    rev: 3.9.0
     hooks:
     - id: commitizen
