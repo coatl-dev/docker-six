@@ -8,7 +8,7 @@ on:
       - coatl
 
 jobs:
-  linter:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
