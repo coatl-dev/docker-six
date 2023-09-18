@@ -9,9 +9,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Get Dockerfile subdirectory
         id: dockerfile
         run: echo "subdir=$(echo ${{ github.event.release.tag_name }} | cut -d '.' -f 1,2)" >> $GITHUB_OUTPUT

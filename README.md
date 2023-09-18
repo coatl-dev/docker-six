@@ -1,18 +1,23 @@
+# coatldev/six
+
 [![Lint Dockerfile](https://github.com/coatl-dev/docker-six/actions/workflows/main.yml/badge.svg)](https://github.com/coatl-dev/docker-six/actions/workflows/main.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/coatl-dev/docker-six/coatl.svg)](https://results.pre-commit.ci/latest/github/coatl-dev/docker-six/coatl)
 ![Docker Pulls](https://img.shields.io/docker/pulls/coatldev/six)
-
-# coatldev/six
 
 Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and Python 3 pre-installed.
 
 ## Supported tags
 
-- `3.12`, `3.12.0rc2` - Comes with Python 3.12.0rc2 and 2.7.18.
-- `3.11`, `3.11.5` - Comes with Python 3.11.5 and 2.7.18.
+### Stable releases
+
+- `3`, `3.11`, `3.11.5` - Comes with Python 3.11.5 and 2.7.18.
 - `3.10`, `3.10.13`, `latest` - Comes with Python 3.10.13 and 2.7.18.
 - `3.10.12` - Comes with Python 3.10.12 and 2.7.18.
 - `3.10.11` - Comes with Python 3.10.11 and 2.7.18.
+
+### Alpha, Beta and Release Candidates
+
+- `3.12`, `3.12.0rc2` - Comes with Python 3.12.0rc2 and 2.7.18.
 
 ## How to use this image
 
