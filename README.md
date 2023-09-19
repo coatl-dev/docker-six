@@ -17,7 +17,8 @@ Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and Python 
 
 ### Alpha, Beta and Release Candidates
 
-- `3.12`, `3.12.0rc2` - Comes with Python 3.12.0rc2 and 2.7.18.
+- `3.12`, `3.12.0rc3` - Comes with Python 3.12.0rc3 and 2.7.18.
+- `3.12.0rc2` - Comes with Python 3.12.0rc2 and 2.7.18.
 
 ## How to use this image
 
