@@ -1,3 +1,9 @@
+## 3.12.0rc3 (2023-09-19)
+
+### Feat
+
+- **python**: upgrade 3.12 image to Python 3.12.0rc3 (#26)
+
 ## 3.12.0rc2 (2023-09-13)
 
 ### Feat
