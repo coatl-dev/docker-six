@@ -10,8 +10,9 @@ Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and Python 
 
 ### Stable releases
 
-- [`3`, `3.11`, `3.11.5`] - Comes with Python 3.11.5 and 2.7.18.
-- [`3.10`, `3.10.13`, `latest`] - Comes with Python 3.10.13 and 2.7.18.
+- [`3.12`, `3.12.0`, `latest`] - Comes with Python 3.12.0 and 2.7.18.
+- [`3.11`, `3.11.6`] - Comes with Python 3.11.6 and 2.7.18.
+- [`3.10`, `3.10.13`] - Comes with Python 3.10.13 and 2.7.18.
 - [`3.10.12`] - Comes with Python 3.10.12 and 2.7.18.
 - [`3.10.11`] - Comes with Python 3.10.11 and 2.7.18.
 
@@ -80,11 +81,12 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 - [`2.7/buster/slim`]
 - [`3.10/slim-bullseye`]
 - [`3.11/slim-bullseye`]
-- [`3.12-rc/slim-bullseye`]
+- [`3.12/slim-bullseye`]
 
 <!-- Dockerfiles -->
-[`3`, `3.11`, `3.11.5`]: https://github.com/coatl-dev/docker-six/blob/3.11.5/3.11/Dockerfile
-[`3.10`, `3.10.13`, `latest`]: https://github.com/coatl-dev/docker-six/blob/3.10.13/Dockerfile
+[`3.12`, `3.12.0`, `latest`]: https://github.com/coatl-dev/docker-six/blob/3.12.0/3.12/Dockerfile
+[`3.11`, `3.11.6`]: https://github.com/coatl-dev/docker-six/blob/3.11.6/3.11/Dockerfile
+[`3.10`, `3.10.13`]: https://github.com/coatl-dev/docker-six/blob/3.10.13/Dockerfile
 [`3.10.11`]: https://github.com/coatl-dev/docker-six/blob/3.10.11/Dockerfile
 [`3.10.12`]: https://github.com/coatl-dev/docker-six/blob/3.10.12/Dockerfile
 [`3.12.0rc2`]: https://github.com/coatl-dev/docker-six/blob/3.12.0rc2/3.12/Dockerfile
@@ -98,4 +100,4 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 [`2.7/buster/slim`]: https://github.com/docker-library/python/blob/f1e613f48eb4fc88748b36787f5ed74c14914636/2.7/buster/slim/Dockerfile
 [`3.10/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.10/slim-bullseye/Dockerfile
 [`3.11/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.10/slim-bullseye/Dockerfile
-[`3.12-rc/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.12-rc/slim-bullseye/Dockerfile
+[`3.12/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.12/slim-bullseye/Dockerfile
