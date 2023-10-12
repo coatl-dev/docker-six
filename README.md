@@ -18,6 +18,8 @@ For more tags, [click here](https://hub.docker.com/repository/docker/coatldev/si
 
 The examples below will demonstrate how to use this image in [Azure Pipelines], and [GitHub Workflows].
 
+**NOTE:** `pip` caching is disabled by default. See: <https://github.com/actions/runner/issues/652>
+
 ### Azure Pipelines
 
 ```yml
@@ -55,12 +57,11 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Ref: https://github.com/actions/runner/issues/652
-      - name: Install dependencies (with no caching)
+      - name: Install dependencies
         run: |
-          python -m pip install --no-cache-dir --upgrade pip tox
+          python -m pip install --upgrade pip tox
 
       - name: Run tests
         run: |
