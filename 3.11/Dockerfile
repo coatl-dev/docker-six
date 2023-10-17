@@ -34,9 +34,8 @@ RUN set -eux; \
     apt-get install --yes --no-install-recommends \
         bzip2 \
         ca-certificates \
+        gcc \
         git \
-        libpython2.7 \
-        libpython3.11 \
         netbase \
         sudo \
         tzdata \
@@ -54,7 +53,6 @@ RUN set -eux; \
         build-essential \
         dirmngr \
         dpkg-dev \
-        gcc \
         gnupg \
         libbluetooth-dev \
         libbz2-dev \
@@ -143,6 +141,10 @@ RUN set -eux; \
     ; \
     make altinstall; \
     \
+    ARCH="$(arch)"; \
+    ln -s "${PYTHON_ROOT}/2/lib/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0"; \
+    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1"; \
+    \
     find "${PYTHON_ROOT}" -depth \
         \( \
             \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
@@ -155,17 +157,17 @@ RUN set -eux; \
 # update Pip, Setuptools and Wheel packages
 RUN set -eux; \
     \
-    "${PYTHON_ROOT}/2/bin/python2.7" -m ensurepip --default-pip; \
-    "${PYTHON_ROOT}/2/bin/python2.7" -m pip install --upgrade pip setuptools wheel
+    "${PYTHON_ROOT}/2/bin/python${PYTHON2_VERSION%.*}" -m ensurepip --default-pip; \
+    "${PYTHON_ROOT}/2/bin/python${PYTHON2_VERSION%.*}" -m pip install --upgrade pip setuptools wheel
 
 # add some soft links for comfortable usage
 WORKDIR "${PYTHON_ROOT}/2/bin"
 RUN set -eux; \
     \
     ln -s idle idle2; \
-    ln -s python2.7 python2; \
-    ln -s python2 python; \
-    ln -s python2.7-config python-config
+    ln -s "python${PYTHON2_VERSION%.*}" python2; \
+    ln -s "python${PYTHON2_VERSION%.*}" python; \
+    ln -s "python${PYTHON2_VERSION%.*}-config" python-config
 
 # > =============================================================== <
 
@@ -213,6 +215,10 @@ RUN set -eux; \
     ; \
     make altinstall; \
     \
+    ARCH="$(arch)"; \
+    ln -s "${PYTHON_ROOT}/3/lib/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0"; \
+    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython3.so.1"; \
+    \
      find "${PYTHON_ROOT}" -depth \
         \( \
             \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
@@ -224,20 +230,18 @@ RUN set -eux; \
 # update Pip, Setuptools and Wheel packages
 RUN set -eux; \
     \
-    "${PYTHON_ROOT}/3/bin/python3.11" -m pip install --upgrade pip setuptools wheel
+    "${PYTHON_ROOT}/3/bin/python${PYTHON3_VERSION%.*}" -m pip install --upgrade pip setuptools wheel
 
 # add some soft links for comfortable usage
 WORKDIR "${PYTHON_ROOT}/3/bin"
 RUN set -eux; \
     \
-    ln -s idle3.11 idle3; \
-    ln -s idle3 idle; \
-    ln -s pip3.11 pip3; \
-    ln -s pip3 pip; \
-    ln -s pydoc3.11 pydoc; \
-    ln -s python3.11 python3; \
-    ln -s python3 python; \
-    ln -s python3.11-config python-config
+    ln -s "idle${PYTHON3_VERSION%.*}" idle3; \
+    ln -s "idle${PYTHON3_VERSION%.*}" idle; \
+    ln -s "pydoc${PYTHON3_VERSION%.*}" pydoc; \
+    ln -s "python${PYTHON3_VERSION%.*}" python3; \
+    ln -s "python${PYTHON3_VERSION%.*}" python; \
+    ln -s "python${PYTHON3_VERSION%.*}-config" python-config
 
 # > =============================================================== <
 
@@ -248,6 +252,15 @@ COPY --from=python3 ${PYTHON_ROOT}/3/ ${PYTHON_ROOT}/3/
 
 # ensure local python is preferred over distribution python
 ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH
+
+# link Python libraries
+RUN set -eux; \
+    \
+    ARCH="$(arch)"; \
+    ln -s "${PYTHON_ROOT}/2/lib/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0"; \
+    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1"; \
+    ln -s "${PYTHON_ROOT}/3/lib/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0"; \
+    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython3.so.1"
 
 # git config "hack"
 RUN set -eux; \
