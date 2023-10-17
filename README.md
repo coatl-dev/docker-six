@@ -12,7 +12,11 @@ Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and Python 
 - [`3.11`, `3.11.6`] - Comes with Python 3.11.6 and 2.7.18.
 - [`3.10`, `3.10.13`] - Comes with Python 3.10.13 and 2.7.18.
 
-For more tags, [click here](https://hub.docker.com/repository/docker/coatldev/six/tags).
+### Alpha, Beta and Release Candidates
+
+- [`3.13.0a1`] - Comes with Python 3.13.0a1 and 2.7.18.
+
+For more tags, [click here].
 
 ## How to use this image
 
@@ -78,11 +82,13 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 - [`3.12/slim-bullseye`]
 
 <!-- Dockerfiles -->
-[`3.12`, `3.12.0`, `latest`]: https://github.com/coatl-dev/docker-six/blob/3.12.0/3.12/Dockerfile
-[`3.11`, `3.11.6`]: https://github.com/coatl-dev/docker-six/blob/3.11.6/3.11/Dockerfile
-[`3.10`, `3.10.13`]: https://github.com/coatl-dev/docker-six/blob/3.10.13/Dockerfile
+[`3.12`, `3.12.0`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/Dockerfile
+[`3.11`, `3.11.6`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/Dockerfile
+[`3.10`, `3.10.13`]: https://github.com/coatl-dev/docker-six/blob/HEAD/Dockerfile
+[`3.13.0a1`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/Dockerfile
 <!-- External links -->
 [Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
+[click here]: https://hub.docker.com/repository/docker/coatldev/six/tags
 [GitHub Workflows]: https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
 [Docker "Official Image"]: https://github.com/docker-library/official-images#what-are-official-images
 [`python`]: https://hub.docker.com/_/python/
