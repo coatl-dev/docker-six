@@ -103,8 +103,8 @@ RUN set -eux; \
     make altinstall; \
     \
     ARCH="$(arch)"; \
-    ln -s "${PYTHON_ROOT}/2/lib/libpython2.7.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython2.7.so.1.0"; \
-    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython2.7.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython2.7.so.1"; \
+    ln -s "${PYTHON_ROOT}/2/lib/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0"; \
+    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1"; \
     \
     find "${PYTHON_ROOT}" -depth \
         \( \
@@ -115,20 +115,20 @@ RUN set -eux; \
     ; \
     rm "/tmp/Python-$PYTHON2_VERSION.tgz"
 
+# update Pip, Setuptools and Wheel packages
+RUN set -eux; \
+    \
+    "${PYTHON_ROOT}/2/bin/python${PYTHON2_VERSION%.*}" -m ensurepip --default-pip; \
+    "${PYTHON_ROOT}/2/bin/python${PYTHON2_VERSION%.*}" -m pip install --upgrade pip setuptools wheel
+
 # add some soft links for comfortable usage
 WORKDIR "${PYTHON_ROOT}/2/bin"
 RUN set -eux; \
     \
     ln -s idle idle2; \
-    ln -s python2.7 python2; \
-    ln -s python2.7 python; \
-    ln -s python2.7-config python-config
-
-# update Pip, Setuptools and Wheel packages
-RUN set -eux; \
-    \
-    "${PYTHON_ROOT}/2/bin/python2.7" -m ensurepip --default-pip; \
-    "${PYTHON_ROOT}/2/bin/python2.7" -m pip install --upgrade pip setuptools wheel
+    ln -s "python${PYTHON2_VERSION%.*}" python2; \
+    ln -s "python${PYTHON2_VERSION%.*}" python; \
+    ln -s "python${PYTHON2_VERSION%.*}-config" python-config
 
 # > =============================================================== <
 
@@ -159,8 +159,8 @@ RUN set -eux; \
     make altinstall; \
     \
     ARCH="$(arch)"; \
-    ln -s "${PYTHON_ROOT}/3/lib/libpython3.12.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython3.12.so.1.0"; \
-    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython3.12.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython3.so.1"; \
+    ln -s "${PYTHON_ROOT}/3/lib/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0"; \
+    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython3.so.1"; \
     \
      find "${PYTHON_ROOT}" -depth \
         \( \
@@ -170,23 +170,21 @@ RUN set -eux; \
     ; \
     rm "/tmp/Python-$PYTHON3_VERSION.tgz"
 
+# update Pip, Setuptools and Wheel packages
+RUN set -eux; \
+    \
+    "${PYTHON_ROOT}/3/bin/python${PYTHON3_VERSION%.*}" -m pip install --upgrade pip setuptools wheel
+
 # add some soft links for comfortable usage
 WORKDIR "${PYTHON_ROOT}/3/bin"
 RUN set -eux; \
     \
-    ln -s idle3.12 idle; \
-    ln -s idle3.12 idle3; \
-    ln -s pip3.12 pip3; \
-    ln -s pip3 pip; \
-    ln -s pydoc3.12 pydoc; \
-    ln -s python3.12 python3; \
-    ln -s python3.12 python; \
-    ln -s python3.12-config python-config
-
-# update Pip, Setuptools and Wheel packages
-RUN set -eux; \
-    \
-    "${PYTHON_ROOT}/3/bin/python3.12" -m pip install --upgrade pip setuptools wheel
+    ln -s "idle${PYTHON3_VERSION%.*}" idle; \
+    ln -s "idle${PYTHON3_VERSION%.*}" idle3; \
+    ln -s "pydoc${PYTHON3_VERSION%.*}" pydoc; \
+    ln -s "python${PYTHON3_VERSION%.*}" python3; \
+    ln -s "python${PYTHON3_VERSION%.*}" python; \
+    ln -s "python${PYTHON3_VERSION%.*}-config" python-config
 
 # > =============================================================== <
 
@@ -202,10 +200,10 @@ ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH
 RUN set -eux; \
     \
     ARCH="$(arch)"; \
-    ln -s "${PYTHON_ROOT}/2/lib/libpython2.7.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython2.7.so.1.0"; \
-    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython2.7.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython2.7.so.1"; \
-    ln -s "${PYTHON_ROOT}/3/lib/libpython3.12.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython3.12.so.1.0"; \
-    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython3.12.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython3.so.1"
+    ln -s "${PYTHON_ROOT}/2/lib/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0"; \
+    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1"; \
+    ln -s "${PYTHON_ROOT}/3/lib/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0"; \
+    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython3.so.1"
 
 # git config "hack"
 RUN set -eux; \
