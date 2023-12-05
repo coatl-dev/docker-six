@@ -5,6 +5,8 @@ LABEL \
     repository="https://github.com/coatl-dev/docker-six" \
     vendor="coatl.dev"
 
+ENV DEBIAN_FRONTEND noninteractive
+
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
@@ -24,7 +26,6 @@ ENV PYTHON3_VERSION 3.13.0a2
 # base dependencies
 RUN set -eux; \
     \
-    export DEBIAN_FRONTEND=noninteractive; \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
         gnupg \
