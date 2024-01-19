@@ -95,5 +95,5 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 <!-- Inspiration -->
 [`2.7/buster/slim`]: https://github.com/docker-library/python/blob/f1e613f48eb4fc88748b36787f5ed74c14914636/2.7/buster/slim/Dockerfile
 [`3.10/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.10/slim-bullseye/Dockerfile
-[`3.11/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.10/slim-bullseye/Dockerfile
+[`3.11/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.11/slim-bullseye/Dockerfile
 [`3.12/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.12/slim-bullseye/Dockerfile
