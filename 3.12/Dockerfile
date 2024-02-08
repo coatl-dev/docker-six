@@ -21,7 +21,7 @@ ENV PIP_ROOT_USER_ACTION ignore
 # python
 ENV PYTHON_ROOT /opt/python
 ENV PYTHON2_VERSION 2.7.18
-ENV PYTHON3_VERSION 3.12.1
+ENV PYTHON3_VERSION 3.12.2
 
 # base dependencies
 RUN set -eux; \
