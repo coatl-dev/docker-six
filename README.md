@@ -9,7 +9,7 @@ Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and Python 
 ## Supported tags
 
 - [`3.12`, `3.12.1`, `latest`] - Comes with Python 3.12.1 and 2.7.18.
-- [`3.11`, `3.11.7`] - Comes with Python 3.11.7 and 2.7.18.
+- [`3.11`, `3.11.8`] - Comes with Python 3.11.8 and 2.7.18.
 - [`3.10`, `3.10.13`] - Comes with Python 3.10.13 and 2.7.18.
 
 ### Alpha, Beta and Release Candidates
@@ -83,7 +83,7 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 
 <!-- Dockerfiles -->
 [`3.12`, `3.12.1`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/Dockerfile
-[`3.11`, `3.11.7`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/Dockerfile
+[`3.11`, `3.11.8`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/Dockerfile
 [`3.10`, `3.10.13`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/Dockerfile
 [`3.13.0a3`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/Dockerfile
 <!-- External links -->
