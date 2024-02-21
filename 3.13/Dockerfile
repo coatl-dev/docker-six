@@ -21,7 +21,7 @@ ENV PIP_ROOT_USER_ACTION ignore
 # python
 ENV PYTHON_ROOT /opt/python
 ENV PYTHON2_VERSION 2.7.18
-ENV PYTHON3_VERSION 3.13.0a3
+ENV PYTHON3_VERSION 3.13.0a4
 
 # base dependencies
 RUN set -eux; \
@@ -33,6 +33,7 @@ RUN set -eux; \
     ; \
     add-apt-repository ppa:git-core/ppa -y; \
     apt-get install --yes --no-install-recommends \
+        build-essential \
         bzip2 \
         ca-certificates \
         gcc \
@@ -51,7 +52,6 @@ RUN set -eux; \
     \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
-        build-essential \
         dirmngr \
         dpkg-dev \
         gnupg \
