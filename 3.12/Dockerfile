@@ -33,6 +33,7 @@ RUN set -eux; \
     ; \
     add-apt-repository ppa:git-core/ppa -y; \
     apt-get install --yes --no-install-recommends \
+        build-essential \
         bzip2 \
         ca-certificates \
         gcc \
@@ -51,7 +52,6 @@ RUN set -eux; \
     \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
-        build-essential \
         dirmngr \
         dpkg-dev \
         gnupg \
