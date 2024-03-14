@@ -85,7 +85,7 @@ WORKDIR /tmp
 RUN set -eux; \
     \
     wget -q "https://www.python.org/ftp/python/${PYTHON2_VERSION%%[a-z]*}/Python-$PYTHON2_VERSION.tgz"; \
-    tar xzf "Python-$PYTHON2_VERSION.tgz"
+    tar -zxf "Python-$PYTHON2_VERSION.tgz"
 
 WORKDIR "/tmp/Python-$PYTHON2_VERSION"
 
@@ -178,7 +178,7 @@ WORKDIR /tmp
 RUN set -eux; \
     \
     wget -q "https://www.python.org/ftp/python/${PYTHON3_VERSION%%[a-z]*}/Python-$PYTHON3_VERSION.tgz"; \
-    tar xzf "Python-$PYTHON3_VERSION.tgz"
+    tar -zxf "Python-$PYTHON3_VERSION.tgz"
 
 WORKDIR "/tmp/Python-$PYTHON3_VERSION"
 
