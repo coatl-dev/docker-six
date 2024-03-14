@@ -31,8 +31,11 @@ RUN set -eux; \
         gnupg \
         software-properties-common \
     ; \
-    add-apt-repository ppa:git-core/ppa -y; \
+    add-apt-repository --yes \
+        ppa:git-core/ppa \
+    ; \
     apt-get install --yes --no-install-recommends \
+        build-essential \
         bzip2 \
         ca-certificates \
         gcc \
@@ -51,30 +54,25 @@ RUN set -eux; \
     \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
-        build-essential \
-        dirmngr \
-        dpkg-dev \
-        gnupg \
-        libbluetooth-dev \
-        libbz2-dev \
-        libc6-dev \
-        libdb-dev \
-        libexpat1-dev \
-        libffi-dev \
-        libgdbm-dev \
-        liblzma-dev \
-        libncurses5-dev \
-        libncursesw5-dev \
-        libreadline-dev \
-        libsqlite3-dev \
-        libssl-dev \
-        llvm \
-        make \
-        tk-dev \
-        uuid-dev \
-        wget \
-        xz-utils \
-        zlib1g-dev \
+		dpkg-dev \
+		libbluetooth-dev \
+		libbz2-dev \
+		libc6-dev \
+		libdb-dev \
+		libexpat1-dev \
+		libffi-dev \
+		libgdbm-dev \
+		liblzma-dev \
+		libncursesw5-dev \
+		libreadline-dev \
+		libsqlite3-dev \
+		libssl-dev \
+		make \
+		tk-dev \
+		uuid-dev \
+		wget \
+		xz-utils \
+		zlib1g-dev \
     ; \
     rm -rf /var/lib/apt/lists/*
 
@@ -140,6 +138,7 @@ RUN set -eux; \
             test_unicode \
         ' \
     ; \
+    \
     make altinstall; \
     \
     ARCH="$(arch)"; \
@@ -196,24 +195,16 @@ RUN set -eux; \
         --with-lto \
         --with-system-expat \
     ; \
-    nproc="$(nproc)"; \
-    EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
-    LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
-    LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
-    make -j "$nproc" \
-        "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
-        "LDFLAGS=${LDFLAGS:-}" \
-        "PROFILE_TASK=${PROFILE_TASK:-}" \
-    ; \
-# https://github.com/docker-library/python/issues/784
-# prevent accidental usage of a system installed libpython of the same version
-    rm python; \
-    make -j "$nproc" \
-        "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
-        "LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
-        "PROFILE_TASK=${PROFILE_TASK:-}" \
-        python \
-    ; \
+    \
+	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
+	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
+	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
+	make -j "$(nproc)" \
+		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+		"LDFLAGS=${LDFLAGS:-}" \
+		"PROFILE_TASK=${PROFILE_TASK:-}" \
+	; \
+    \
     make altinstall; \
     \
     ARCH="$(arch)"; \

@@ -33,7 +33,7 @@ jobs:
     pool:
       vmImage: ubuntu-latest
 
-    container: coatldev/six:3.11
+    container: coatldev/six:latest
 
     steps:
       - script: |
@@ -57,7 +57,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container: coatldev/six:3.11
+    container: coatldev/six:latest
 
     steps:
       - name: Checkout repo
@@ -80,6 +80,7 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 - [`3.10/slim-bullseye`]
 - [`3.11/slim-bullseye`]
 - [`3.12/slim-bullseye`]
+- [`3.13-rc/slim-bullseye`]
 
 <!-- Dockerfiles -->
 [`3.12`, `3.12.2`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/Dockerfile
@@ -97,3 +98,4 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 [`3.10/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.10/slim-bullseye/Dockerfile
 [`3.11/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.11/slim-bullseye/Dockerfile
 [`3.12/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.12/slim-bullseye/Dockerfile
+[`3.13-rc/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.13-rc/slim-bullseye/Dockerfile
