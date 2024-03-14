@@ -31,7 +31,9 @@ RUN set -eux; \
         gnupg \
         software-properties-common \
     ; \
-    add-apt-repository ppa:git-core/ppa -y; \
+    add-apt-repository --yes \
+        ppa:git-core/ppa \
+    ; \
     apt-get install --yes --no-install-recommends \
         build-essential \
         bzip2 \
@@ -52,29 +54,25 @@ RUN set -eux; \
     \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
-        dirmngr \
-        dpkg-dev \
-        gnupg \
-        libbluetooth-dev \
-        libbz2-dev \
-        libc6-dev \
-        libdb-dev \
-        libexpat1-dev \
-        libffi-dev \
-        libgdbm-dev \
-        liblzma-dev \
-        libncurses5-dev \
-        libncursesw5-dev \
-        libreadline-dev \
-        libsqlite3-dev \
-        libssl-dev \
-        llvm \
-        make \
-        tk-dev \
-        uuid-dev \
-        wget \
-        xz-utils \
-        zlib1g-dev \
+		dpkg-dev \
+		libbluetooth-dev \
+		libbz2-dev \
+		libc6-dev \
+		libdb-dev \
+		libexpat1-dev \
+		libffi-dev \
+		libgdbm-dev \
+		liblzma-dev \
+		libncursesw5-dev \
+		libreadline-dev \
+		libsqlite3-dev \
+		libssl-dev \
+		make \
+		tk-dev \
+		uuid-dev \
+		wget \
+		xz-utils \
+		zlib1g-dev \
     ; \
     rm -rf /var/lib/apt/lists/*
 
@@ -87,19 +85,59 @@ WORKDIR /tmp
 RUN set -eux; \
     \
     wget -q "https://www.python.org/ftp/python/${PYTHON2_VERSION%%[a-z]*}/Python-$PYTHON2_VERSION.tgz"; \
-    tar xzf "Python-$PYTHON2_VERSION.tgz"
+    tar -zxf "Python-$PYTHON2_VERSION.tgz"
 
 WORKDIR "/tmp/Python-$PYTHON2_VERSION"
 
 RUN set -eux; \
     \
+    gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
     ./configure \
+        --build="$gnuArch" \
         --prefix="${PYTHON_ROOT}/2/" \
         --enable-optimizations \
+        --enable-option-checking=fatal \
         --enable-shared \
         --enable-unicode=ucs4 \
     ; \
-    make -j "$(nproc)"; \
+    make -j "$(nproc)" \
+# setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
+        PROFILE_TASK='-m test.regrtest --pgo \
+            test_array \
+            test_base64 \
+            test_binascii \
+            test_binhex \
+            test_binop \
+            test_bytes \
+            test_c_locale_coercion \
+            test_class \
+            test_cmath \
+            test_codecs \
+            test_compile \
+            test_complex \
+            test_csv \
+            test_decimal \
+            test_dict \
+            test_float \
+            test_fstring \
+            test_hashlib \
+            test_io \
+            test_iter \
+            test_json \
+            test_long \
+            test_math \
+            test_memoryview \
+            test_pickle \
+            test_re \
+            test_set \
+            test_slice \
+            test_struct \
+            test_threading \
+            test_time \
+            test_traceback \
+            test_unicode \
+        ' \
+    ; \
     \
     make altinstall; \
     \
@@ -140,22 +178,32 @@ WORKDIR /tmp
 RUN set -eux; \
     \
     wget -q "https://www.python.org/ftp/python/${PYTHON3_VERSION%%[a-z]*}/Python-$PYTHON3_VERSION.tgz"; \
-    tar xzf "Python-$PYTHON3_VERSION.tgz"
+    tar -zxf "Python-$PYTHON3_VERSION.tgz"
 
 WORKDIR "/tmp/Python-$PYTHON3_VERSION"
 
 RUN set -eux; \
     \
+    gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
     ./configure \
+        --build="$gnuArch" \
         --prefix="${PYTHON_ROOT}/3/" \
         --enable-loadable-sqlite-extensions \
         --enable-optimizations \
+        --enable-option-checking=fatal \
         --enable-shared \
         --with-lto \
         --with-system-expat \
     ; \
     \
-    make -j "$(nproc)"; \
+	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
+	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
+	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
+	make -j "$(nproc)" \
+		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+		"LDFLAGS=${LDFLAGS:-}" \
+		"PROFILE_TASK=${PROFILE_TASK:-}" \
+	; \
     \
     make altinstall; \
     \
