@@ -89,6 +89,7 @@ RUN set -eux; \
 
 WORKDIR "/tmp/Python-$PYTHON2_VERSION"
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN set -eux; \
     \
     gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
@@ -141,9 +142,8 @@ RUN set -eux; \
     \
     make altinstall; \
     \
-    ARCH="$(arch)"; \
-    ln -s "${PYTHON_ROOT}/2/lib/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0"; \
-    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1"; \
+    echo "${PYTHON_ROOT}/2/lib" | tee /etc/ld.so.conf.d/python2.conf; \
+    ldconfig; \
     \
     find "${PYTHON_ROOT}" -depth \
         \( \
@@ -182,6 +182,7 @@ RUN set -eux; \
 
 WORKDIR "/tmp/Python-$PYTHON3_VERSION"
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN set -eux; \
     \
     gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
@@ -207,9 +208,8 @@ RUN set -eux; \
     \
     make altinstall; \
     \
-    ARCH="$(arch)"; \
-    ln -s "${PYTHON_ROOT}/3/lib/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0"; \
-    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython3.so.1"; \
+    echo "${PYTHON_ROOT}/3/lib" | tee /etc/ld.so.conf.d/python3.conf; \
+    ldconfig; \
     \
      find "${PYTHON_ROOT}" -depth \
         \( \
@@ -228,8 +228,8 @@ RUN set -eux; \
 WORKDIR "${PYTHON_ROOT}/3/bin"
 RUN set -eux; \
     \
-    ln -s "idle${PYTHON3_VERSION%.*}" idle; \
     ln -s "idle${PYTHON3_VERSION%.*}" idle3; \
+    ln -s "idle${PYTHON3_VERSION%.*}" idle; \
     ln -s "pydoc${PYTHON3_VERSION%.*}" pydoc; \
     ln -s "python${PYTHON3_VERSION%.*}" python3; \
     ln -s "python${PYTHON3_VERSION%.*}" python; \
@@ -240,7 +240,9 @@ RUN set -eux; \
 FROM base AS final
 
 COPY --from=python2 ${PYTHON_ROOT}/2/ ${PYTHON_ROOT}/2/
+COPY --from=python2 /etc/ld.so.conf.d/python2.conf /etc/ld.so.conf.d/python2.conf
 COPY --from=python3 ${PYTHON_ROOT}/3/ ${PYTHON_ROOT}/3/
+COPY --from=python3 /etc/ld.so.conf.d/python3.conf /etc/ld.so.conf.d/python3.conf
 
 # ensure local python is preferred over distribution python
 ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH
@@ -248,11 +250,7 @@ ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH
 # link Python libraries
 RUN set -eux; \
     \
-    ARCH="$(arch)"; \
-    ln -s "${PYTHON_ROOT}/2/lib/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0"; \
-    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON2_VERSION%.*}.so.1"; \
-    ln -s "${PYTHON_ROOT}/3/lib/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0"; \
-    ln -s "/usr/lib/${ARCH}-linux-gnu/libpython${PYTHON3_VERSION%.*}.so.1.0" "/usr/lib/${ARCH}-linux-gnu/libpython3.so.1"
+    ldconfig
 
 # git config "hack"
 RUN set -eux; \
