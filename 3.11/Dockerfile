@@ -211,7 +211,7 @@ RUN set -eux; \
     echo "${PYTHON_ROOT}/3/lib" | tee /etc/ld.so.conf.d/python3.conf; \
     ldconfig; \
     \
-     find "${PYTHON_ROOT}" -depth \
+    find "${PYTHON_ROOT}" -depth \
         \( \
             \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
             -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
