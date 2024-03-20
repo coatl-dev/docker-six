@@ -1,3 +1,13 @@
+## 3.8.19 (2024-03-20)
+
+### Feat
+
+- **3.8**: add 3.8.19 (#57)
+
+### Refactor
+
+- change how we link python libraries (#56)
+
 ## 3.13.0a5 (2024-03-13)
 
 ### Feat
