@@ -3,5 +3,5 @@ gpg_sign = true
 name = "cz_conventional_commits"
 tag_format = "$version"
 version_scheme = "pep440"
-version = "3.8.19"
+version = "3.9.19"
 update_changelog_on_bump = true
