@@ -1,6 +1,5 @@
 ci:
   autoupdate_commit_msg: 'build(deps): pre-commit autoupdate'
-  skip: [hadolint]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
