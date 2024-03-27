@@ -1,6 +1,5 @@
 # coatldev/six
 
-[![Lint Dockerfiles](https://github.com/coatl-dev/docker-six/actions/workflows/main.yml/badge.svg)](https://github.com/coatl-dev/docker-six/actions/workflows/main.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/coatl-dev/docker-six/coatl.svg)](https://results.pre-commit.ci/latest/github/coatl-dev/docker-six/coatl)
 ![Docker Pulls](https://img.shields.io/docker/pulls/coatldev/six)
 
