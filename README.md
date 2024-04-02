@@ -8,7 +8,7 @@ Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and Python 
 ## Supported tags
 
 - [`3.12`, `3.12.2`, `latest`] - Comes with Python 3.12.2 and 2.7.18.
-- [`3.11`, `3.11.8`] - Comes with Python 3.11.8 and 2.7.18.
+- [`3.11`, `3.11.9`] - Comes with Python 3.11.9 and 2.7.18.
 - [`3.10`, `3.10.14`] - Comes with Python 3.10.14 and 2.7.18.
 - [`3.9`, `3.9.19`] - Comes with Python 3.9.19 and 2.7.18.
 - [`3.8`, `3.8.19`] - Comes with Python 3.8.19 and 2.7.18.
@@ -88,7 +88,7 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 <!-- Dockerfiles -->
 [`3.13.0a5`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/Dockerfile
 [`3.12`, `3.12.2`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/Dockerfile
-[`3.11`, `3.11.8`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/Dockerfile
+[`3.11`, `3.11.9`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/Dockerfile
 [`3.10`, `3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/Dockerfile
 [`3.9`, `3.9.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.9/Dockerfile
 [`3.8`, `3.8.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.8/Dockerfile
