@@ -40,6 +40,7 @@ RUN set -eux; \
         ca-certificates \
         gcc \
         git \
+        make \
         netbase \
         sudo \
         tzdata \
@@ -67,7 +68,6 @@ RUN set -eux; \
 		libreadline-dev \
 		libsqlite3-dev \
 		libssl-dev \
-		make \
 		tk-dev \
 		uuid-dev \
 		wget \
