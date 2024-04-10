@@ -15,7 +15,7 @@ Docker image based on Ubuntu 22.04 (Jammy Jellyfish) with Python 2.7 and Python 
 
 ### Alpha, Beta and Release Candidates
 
-- [`3.13.0a5`] - Comes with Python 3.13.0a5 and 2.7.18.
+- [`3.13.0a6`] - Comes with Python 3.13.0a6 and 2.7.18.
 
 For more tags, [click here].
 
@@ -86,7 +86,7 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 - [`3.8/slim-bullseye`]
 
 <!-- Dockerfiles -->
-[`3.13.0a5`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/Dockerfile
+[`3.13.0a6`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/Dockerfile
 [`3.12`, `3.12.2`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/Dockerfile
 [`3.11`, `3.11.9`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/Dockerfile
 [`3.10`, `3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/Dockerfile
