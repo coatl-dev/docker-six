@@ -1,3 +1,13 @@
+## 3.13.0a6 (2024-04-10)
+
+### Feat
+
+- **3.13**: update to 3.13.0a6 (#64)
+
+### Refactor
+
+- add make to base image (#63)
+
 ## 3.11.9 (2024-04-02)
 
 ### Feat
