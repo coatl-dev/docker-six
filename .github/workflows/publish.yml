@@ -40,10 +40,9 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./${{ steps.dockerfile.outputs.subdir }}
-          platforms: |
-            linux/amd64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          context: ./${{ steps.dockerfile.outputs.subdir }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
