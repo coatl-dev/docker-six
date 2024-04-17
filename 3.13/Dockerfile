@@ -18,10 +18,8 @@ ENV PIP_NO_CACHE_DIR 1
 ENV PIP_NO_PYTHON_VERSION_WARNING 1
 ENV PIP_ROOT_USER_ACTION ignore
 
-# python
+# Python
 ENV PYTHON_ROOT /opt/python
-ENV PYTHON2_VERSION 2.7.18
-ENV PYTHON3_VERSION 3.13.0a6
 
 # base dependencies
 RUN set -eux; \
@@ -40,7 +38,7 @@ RUN set -eux; \
         ca-certificates \
         gcc \
         git \
-		make \
+        make \
         netbase \
         sudo \
         tzdata \
@@ -55,30 +53,32 @@ RUN set -eux; \
     \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
-		dpkg-dev \
-		libbluetooth-dev \
-		libbz2-dev \
-		libc6-dev \
-		libdb-dev \
-		libexpat1-dev \
-		libffi-dev \
-		libgdbm-dev \
-		liblzma-dev \
-		libncursesw5-dev \
-		libreadline-dev \
-		libsqlite3-dev \
-		libssl-dev \
-		tk-dev \
-		uuid-dev \
-		wget \
-		xz-utils \
-		zlib1g-dev \
+        dpkg-dev \
+        libbluetooth-dev \
+        libbz2-dev \
+        libc6-dev \
+        libdb-dev \
+        libexpat1-dev \
+        libffi-dev \
+        libgdbm-dev \
+        liblzma-dev \
+        libncursesw5-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        tk-dev \
+        uuid-dev \
+        wget \
+        xz-utils \
+        zlib1g-dev \
     ; \
     rm -rf /var/lib/apt/lists/*
 
 # > =============================================================== <
 
 FROM builder AS python2
+
+ENV PYTHON2_VERSION 2.7.18
 
 WORKDIR /tmp
 
@@ -172,6 +172,8 @@ RUN set -eux; \
 # > =============================================================== <
 
 FROM builder AS python3
+
+ENV PYTHON3_VERSION 3.13.0a6
 
 WORKDIR /tmp
 
