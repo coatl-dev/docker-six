@@ -1,4 +1,4 @@
-FROM ubuntu:jammy AS base
+FROM ubuntu:noble AS base
 
 LABEL \
     maintainer="César Román <cesar@coatl.dev>" \
@@ -258,3 +258,5 @@ RUN set -eux; \
 RUN set -eux; \
     \
     git config --system --add safe.directory '*'
+
+CMD ["/bin/bash"]
