@@ -1,3 +1,9 @@
+#
+# NOTE: THIS DOCKERFILE IS GENERATED VIA "dockerfiles.py"
+#
+# PLEASE DO NOT EDIT IT DIRECTLY.
+#
+
 FROM ubuntu:noble AS base
 
 LABEL \
@@ -7,9 +13,6 @@ LABEL \
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# http://bugs.python.org/issue19846
-# > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
-ENV LANG C.UTF-8
 # https://github.com/docker-library/python/issues/147
 ENV PYTHONIOENCODING UTF-8
 
@@ -45,7 +48,7 @@ RUN set -eux; \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-# > =============================================================== <
+# >============================================================================<
 
 FROM base as builder
 
@@ -74,7 +77,7 @@ RUN set -eux; \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-# > =============================================================== <
+# >============================================================================<
 
 FROM builder AS python2
 
@@ -84,10 +87,10 @@ WORKDIR /tmp
 
 RUN set -eux; \
     \
-    wget -q "https://www.python.org/ftp/python/${PYTHON2_VERSION%%[a-z]*}/Python-$PYTHON2_VERSION.tgz"; \
-    tar -zxf "Python-$PYTHON2_VERSION.tgz"
+    wget -q "https://www.python.org/ftp/python/${PYTHON2_VERSION%%[a-z]*}/Python-${PYTHON2_VERSION}.tgz"; \
+    tar -zxf "Python-${PYTHON2_VERSION}.tgz"
 
-WORKDIR "/tmp/Python-$PYTHON2_VERSION"
+WORKDIR "/tmp/Python-${PYTHON2_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN set -eux; \
@@ -169,20 +172,20 @@ RUN set -eux; \
     ln -s "python${PYTHON2_VERSION%.*}" python; \
     ln -s "python${PYTHON2_VERSION%.*}-config" python-config
 
-# > =============================================================== <
+# >============================================================================<
 
 FROM builder AS python3
 
-ENV PYTHON3_VERSION 3.12.3
+ENV PYTHON3_VERSION 3.13.0b1
 
 WORKDIR /tmp
 
 RUN set -eux; \
     \
-    wget -q "https://www.python.org/ftp/python/${PYTHON3_VERSION%%[a-z]*}/Python-$PYTHON3_VERSION.tgz"; \
-    tar -zxf "Python-$PYTHON3_VERSION.tgz"
+    wget -q "https://www.python.org/ftp/python/${PYTHON3_VERSION%%[a-z]*}/Python-${PYTHON3_VERSION}.tgz"; \
+    tar -zxf "Python-${PYTHON3_VERSION}.tgz"
 
-WORKDIR "/tmp/Python-$PYTHON3_VERSION"
+WORKDIR "/tmp/Python-${PYTHON3_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN set -eux; \
@@ -219,7 +222,7 @@ RUN set -eux; \
             -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
         \) -exec rm -rf '{}' + \
     ; \
-    rm "/tmp/Python-$PYTHON3_VERSION.tgz"
+    rm "/tmp/Python-${PYTHON3_VERSION}.tgz"
 
 # update Pip, Setuptools and Wheel packages
 RUN set -eux; \
@@ -237,7 +240,7 @@ RUN set -eux; \
     ln -s "python${PYTHON3_VERSION%.*}" python; \
     ln -s "python${PYTHON3_VERSION%.*}-config" python-config
 
-# > =============================================================== <
+# >============================================================================<
 
 FROM base AS final
 

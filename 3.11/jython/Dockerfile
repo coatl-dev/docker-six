@@ -1,3 +1,9 @@
+#
+# NOTE: THIS DOCKERFILE IS GENERATED VIA "dockerfiles.py"
+#
+# PLEASE DO NOT EDIT IT DIRECTLY.
+#
+
 FROM ubuntu:noble AS base
 
 LABEL \
@@ -10,6 +16,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
+
 # https://github.com/docker-library/python/issues/147
 ENV PYTHONIOENCODING UTF-8
 
@@ -38,14 +45,14 @@ RUN set -eux; \
         ca-certificates \
         gcc \
         git \
-		make \
+        make \
         netbase \
         sudo \
         tzdata \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-# > =============================================================== <
+# >============================================================================<
 
 FROM base as builder
 
@@ -74,7 +81,7 @@ RUN set -eux; \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-# > =============================================================== <
+# >============================================================================<
 
 FROM builder AS python2
 
@@ -84,10 +91,10 @@ WORKDIR /tmp
 
 RUN set -eux; \
     \
-    wget -q "https://www.python.org/ftp/python/${PYTHON2_VERSION%%[a-z]*}/Python-$PYTHON2_VERSION.tgz"; \
-    tar -zxf "Python-$PYTHON2_VERSION.tgz"
+    wget -q "https://www.python.org/ftp/python/${PYTHON2_VERSION%%[a-z]*}/Python-${PYTHON2_VERSION}.tgz"; \
+    tar -zxf "Python-${PYTHON2_VERSION}.tgz"
 
-WORKDIR "/tmp/Python-$PYTHON2_VERSION"
+WORKDIR "/tmp/Python-${PYTHON2_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN set -eux; \
@@ -169,20 +176,20 @@ RUN set -eux; \
     ln -s "python${PYTHON2_VERSION%.*}" python; \
     ln -s "python${PYTHON2_VERSION%.*}-config" python-config
 
-# > =============================================================== <
+# >============================================================================<
 
 FROM builder AS python3
 
-ENV PYTHON3_VERSION 3.9.19
+ENV PYTHON3_VERSION 3.11.9
 
 WORKDIR /tmp
 
 RUN set -eux; \
     \
-    wget -q "https://www.python.org/ftp/python/${PYTHON3_VERSION%%[a-z]*}/Python-$PYTHON3_VERSION.tgz"; \
-    tar -zxf "Python-$PYTHON3_VERSION.tgz"
+    wget -q "https://www.python.org/ftp/python/${PYTHON3_VERSION%%[a-z]*}/Python-${PYTHON3_VERSION}.tgz"; \
+    tar -zxf "Python-${PYTHON3_VERSION}.tgz"
 
-WORKDIR "/tmp/Python-$PYTHON3_VERSION"
+WORKDIR "/tmp/Python-${PYTHON3_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN set -eux; \
@@ -219,7 +226,7 @@ RUN set -eux; \
             -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
         \) -exec rm -rf '{}' + \
     ; \
-    rm "/tmp/Python-$PYTHON3_VERSION.tgz"
+    rm "/tmp/Python-${PYTHON3_VERSION}.tgz"
 
 # update Pip, Setuptools and Wheel packages
 RUN set -eux; \
@@ -237,7 +244,7 @@ RUN set -eux; \
     ln -s "python${PYTHON3_VERSION%.*}" python; \
     ln -s "python${PYTHON3_VERSION%.*}-config" python-config
 
-# > =============================================================== <
+# >============================================================================<
 
 FROM base AS final
 
@@ -246,8 +253,37 @@ COPY --from=python2 /etc/ld.so.conf.d/python2.conf /etc/ld.so.conf.d/python2.con
 COPY --from=python3 ${PYTHON_ROOT}/3/ ${PYTHON_ROOT}/3/
 COPY --from=python3 /etc/ld.so.conf.d/python3.conf /etc/ld.so.conf.d/python3.conf
 
+# Jython
+ENV JYTHON_HOME /opt/jython/2.7.3
+
+RUN set -eux; \
+    \
+    apt-get update --quiet; \
+    apt-get install --yes --no-install-recommends \
+        openjdk-17-jre \
+        wget \
+    ; \
+    rm -rf /var/lib/apt/lists/*
+
+RUN set -eux; \
+    \
+    wget -q -O /tmp/jython-installer.jar "https://repo1.maven.org/maven2/org/python/jython-installer/2.7.3/jython-installer-2.7.3.jar"; \
+    \
+    java -jar /tmp/jython-installer.jar \
+        --silent \
+        --type standard \
+        --directory "${JYTHON_HOME}"; \
+    \
+    rm /tmp/jython-installer.jar
+
+RUN set -eux; \
+    \
+    apt-get purge -y wget; \
+    apt-get autoremove -y; \
+    apt-get clean
+
 # ensure local python is preferred over distribution python
-ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH
+ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:${JYTHON_HOME}/bin:$PATH
 
 # link Python libraries
 RUN set -eux; \
