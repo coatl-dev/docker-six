@@ -6,7 +6,6 @@ repos:
     rev: v4.6.0
     hooks:
       - id: check-yaml
-      - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.28.2

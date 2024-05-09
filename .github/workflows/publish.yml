@@ -16,8 +16,17 @@ jobs:
         id: dockerfile
         run: echo "subdir=$(echo ${{ github.event.release.tag_name }} | cut -d '.' -f 1,2)" >> $GITHUB_OUTPUT
 
-      - name: Docker meta
-        id: meta
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Python tags
+        id: python
         uses: docker/metadata-action@v5
         with:
           images: |
@@ -28,21 +37,33 @@ jobs:
           flavor: |
             latest=${{ startsWith(github.ref, 'refs/tags/3.12') }}
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push
+      - name: Build and push Python image
         uses: docker/build-push-action@v5
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          context: ./${{ steps.dockerfile.outputs.subdir }}
+          context: "{{defaultContext}}:${{ steps.dockerfile.outputs.subdir }}:python"
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.python.outputs.tags }}
+
+      - name: Jython tags
+        id: jython
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            coatldev/six
+          tags: |
+            type=pep440,prefix=jython-,pattern={{version}}
+            type=pep440,prefix=jython-,pattern={{major}}.{{minor}}
+            type=raw,enable=${{ startsWith(github.ref, 'refs/tags/3.12') }},value=jython
+
+      - name: Build and push Jython image
+        uses: docker/build-push-action@v5
+        with:
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          context: "{{defaultContext}}:${{ steps.dockerfile.outputs.subdir }}:jython"
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.jython.outputs.tags }}

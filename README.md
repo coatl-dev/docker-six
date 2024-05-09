@@ -15,7 +15,8 @@ Docker image based on Ubuntu 24.04 (Noble Numbat) with Python 2.7 and Python 3 p
 
 ### Alpha, Beta and Release Candidates
 
-- [`3.13.0a6`] - Comes with Python 3.13.0a6 and 2.7.18.
+- [`3.13.0b1`] - Comes with Python 3.13.0b1 and 2.7.18.
+- [`jython-3.13.0b1`] - Comes with Python 3.13.0b1, 2.7.18 and Jython 2.7.3.
 
 For more tags, [click here].
 
@@ -86,12 +87,13 @@ Based on the [Docker "Official Image"] for [`python`] using the following `Docke
 - [`3.8/slim-bullseye`]
 
 <!-- Dockerfiles -->
-[`3.13.0a6`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/Dockerfile
-[`3.12`, `3.12.3`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/Dockerfile
-[`3.11`, `3.11.9`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/Dockerfile
-[`3.10`, `3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/Dockerfile
-[`3.9`, `3.9.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.9/Dockerfile
-[`3.8`, `3.8.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.8/Dockerfile
+[`3.13.0b1`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/python/Dockerfile
+[`3.12`, `3.12.3`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/python/Dockerfile
+[`3.11`, `3.11.9`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/python/Dockerfile
+[`3.10`, `3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/python/Dockerfile
+[`3.9`, `3.9.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.9/python/Dockerfile
+[`3.8`, `3.8.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.8/python/Dockerfile
+[`jython-3.13.0b1`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/jython/Dockerfile
 <!-- External links -->
 [Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
 [click here]: https://hub.docker.com/repository/docker/coatldev/six/tags
