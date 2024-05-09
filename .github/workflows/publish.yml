@@ -42,7 +42,7 @@ jobs:
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          context: "{{defaultContext}}:${{ steps.dockerfile.outputs.subdir }}:python"
+          context: ./${{ steps.dockerfile.outputs.subdir }}/python
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.python.outputs.tags }}
@@ -63,7 +63,7 @@ jobs:
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          context: "{{defaultContext}}:${{ steps.dockerfile.outputs.subdir }}:jython"
+          context: ./${{ steps.dockerfile.outputs.subdir }}/jython
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.jython.outputs.tags }}
