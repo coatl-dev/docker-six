@@ -5,16 +5,31 @@ on:
     types:
       - published
 
+env:
+  REGISTRY_IMAGE: coatldev/six
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
     steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Get Dockerfile subdirectory
         id: dockerfile
-        run: echo "subdir=$(echo ${{ github.event.release.tag_name }} | cut -d '.' -f 1,2)" >> $GITHUB_OUTPUT
+        run: |
+          echo "subdir=$(echo ${{ github.event.release.tag_name }} | cut -d '.' -f 1,2)" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -27,7 +42,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            coatldev/six
+            ${{ env.REGISTRY_IMAGE }}
           tags: |
             type=pep440,pattern={{version}}
             type=pep440,pattern={{major}}.{{minor}}
@@ -40,33 +55,92 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Python image
+      - name: Build and push Python digest
+        id: build-python
         uses: docker/build-push-action@v5
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: ./${{ steps.dockerfile.outputs.subdir }}/python
-          platforms: linux/amd64,linux/arm64
-          push: true
+          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          platforms: ${{ matrix.platform }}
           tags: ${{ steps.python.outputs.tags }}
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build-python.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
 
       - name: Jython tags
         id: jython
         uses: docker/metadata-action@v5
         with:
           images: |
-            coatldev/six
+            ${{ env.REGISTRY_IMAGE }}
           tags: |
             type=pep440,prefix=jython-,pattern={{version}}
             type=pep440,prefix=jython-,pattern={{major}}.{{minor}}
             type=raw,enable=${{ startsWith(github.ref, 'refs/tags/3.12') }},value=jython
 
-      - name: Build and push Jython image
+      - name: Build and push Jython digest
+        id: build-jython
         uses: docker/build-push-action@v5
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: ./${{ steps.dockerfile.outputs.subdir }}/jython
-          platforms: linux/amd64,linux/arm64
-          push: true
+          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          platforms: ${{ matrix.platform }}
           tags: ${{ steps.jython.outputs.tags }}
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build-jython.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
