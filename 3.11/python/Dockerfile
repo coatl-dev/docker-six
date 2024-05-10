@@ -43,12 +43,14 @@ RUN set -eux; \
         build-essential \
         bzip2 \
         ca-certificates \
+        curl \
         gcc \
         git \
         make \
         netbase \
         sudo \
         tzdata \
+        wget \
     ; \
     rm -rf /var/lib/apt/lists/*
 
@@ -75,7 +77,6 @@ RUN set -eux; \
         libssl-dev \
         tk-dev \
         uuid-dev \
-        wget \
         xz-utils \
         zlib1g-dev \
     ; \
