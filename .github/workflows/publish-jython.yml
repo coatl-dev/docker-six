@@ -1,4 +1,4 @@
-name: publish-python
+name: publish-jython
 
 on:
   release:
