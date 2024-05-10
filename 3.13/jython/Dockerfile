@@ -39,12 +39,14 @@ RUN set -eux; \
         build-essential \
         bzip2 \
         ca-certificates \
+        curl \
         gcc \
         git \
         make \
         netbase \
         sudo \
         tzdata \
+        wget \
     ; \
     rm -rf /var/lib/apt/lists/*
 
@@ -71,7 +73,6 @@ RUN set -eux; \
         libssl-dev \
         tk-dev \
         uuid-dev \
-        wget \
         xz-utils \
         zlib1g-dev \
     ; \
@@ -257,7 +258,6 @@ RUN set -eux; \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
         openjdk-17-jre \
-        wget \
     ; \
     rm -rf /var/lib/apt/lists/*
 
@@ -271,12 +271,6 @@ RUN set -eux; \
         --directory "${JYTHON_HOME}"; \
     \
     rm /tmp/jython-installer.jar
-
-RUN set -eux; \
-    \
-    apt-get purge -y wget; \
-    apt-get autoremove -y; \
-    apt-get clean
 
 # ensure local python is preferred over distribution python
 ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:${JYTHON_HOME}/bin:$PATH
