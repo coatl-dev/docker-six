@@ -10,13 +10,16 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
+        include:
+          - os: ubuntu-latest
+            platform: linux/amd64
+          - os: macos-latest
+            platform: linux/arm64
+    name: build-${{ matrix.os }}-${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Prepare
         run: |
@@ -30,6 +33,14 @@ jobs:
         id: dockerfile
         run: |
           echo "subdir=$(echo ${{ github.event.release.tag_name }} | cut -d '.' -f 1,2)" >> $GITHUB_OUTPUT
+
+      - name: Install Docker on macOS
+        if: runner.os == 'macOS'
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+        run: |
+          brew install --formula docker
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
