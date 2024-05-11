@@ -22,7 +22,10 @@ and [Jython](#jython) pre-installed.
 
 ### Jython
 
-- [`jython-3.8`, `jython-3.8.19`] - Comes with Python 3.8.19 and 2.7.18.
+- [`jython-3.9`, `jython-3.9.19`] - Comes with Python 3.9.19, 2.7.18 and Jython
+  2.7.3.
+- [`jython-3.8`, `jython-3.8.19`] - Comes with Python 3.8.19, 2.7.18 and Jython
+  2.7.3.
 
 #### Jython Alpha, Beta and Release Candidates
 
