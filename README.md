@@ -22,10 +22,12 @@ and [Jython](#jython) pre-installed.
 
 ### Jython
 
-- [`jython-3.9`, `jython-3.9.19`] - Comes with Python 3.9.19, 2.7.18 and Jython
-  2.7.3.
-- [`jython-3.8`, `jython-3.8.19`] - Comes with Python 3.8.19, 2.7.18 and Jython
-  2.7.3.
+- [`jython-3.10`, `jython-3.10.14`] - Comes with Python 3.10.14, 2.7.18, Jython
+  2.7.3 and Java 17.
+- [`jython-3.9`, `jython-3.9.19`] - Comes with Python 3.9.19, 2.7.18, Jython
+  2.7.3 and Java 17.
+- [`jython-3.8`, `jython-3.8.19`] - Comes with Python 3.8.19, 2.7.18, Jython
+  2.7.3 and Java 17.
 
 #### Jython Alpha, Beta and Release Candidates
 
@@ -96,21 +98,23 @@ Based on the [Docker "Official Image"] for [`python`] using the following
 `Dockerfile`s:
 
 - [`2.7/buster/slim`]
-- [`3.13-rc/slim-bullseye`]
-- [`3.12/slim-bullseye`]
-- [`3.11/slim-bullseye`]
-- [`3.10/slim-bullseye`]
-- [`3.9/slim-bullseye`]
 - [`3.8/slim-bullseye`]
+- [`3.9/slim-bullseye`]
+- [`3.10/slim-bullseye`]
+- [`3.11/slim-bullseye`]
+- [`3.12/slim-bullseye`]
+- [`3.13-rc/slim-bullseye`]
 
 <!-- Dockerfiles -->
-[`3.13.0b1`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/python/Dockerfile
-[`3.12`, `3.12.3`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/python/Dockerfile
-[`3.11`, `3.11.9`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/python/Dockerfile
-[`3.10`, `3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/python/Dockerfile
-[`3.9`, `3.9.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.9/python/Dockerfile
 [`3.8`, `3.8.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.8/python/Dockerfile
 [`jython-3.8`, `jython-3.8.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.8/jython/Dockerfile
+[`3.9`, `3.9.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.9/python/Dockerfile
+[`jython-3.9`, `jython-3.9.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.9/jython/Dockerfile
+[`3.10`, `3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/python/Dockerfile
+[`jython-3.10`, `jython-3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/jython/Dockerfile
+[`3.11`, `3.11.9`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/python/Dockerfile
+[`3.12`, `3.12.3`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/python/Dockerfile
+[`3.13.0b1`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/python/Dockerfile
 [`jython-3.13.0b1`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/jython/Dockerfile
 <!-- External links -->
 [Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
@@ -120,9 +124,9 @@ Based on the [Docker "Official Image"] for [`python`] using the following
 [`python`]: https://hub.docker.com/_/python/
 <!-- Inspiration -->
 [`2.7/buster/slim`]: https://github.com/docker-library/python/blob/f1e613f48eb4fc88748b36787f5ed74c14914636/2.7/buster/slim/Dockerfile
-[`3.13-rc/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.13-rc/slim-bullseye/Dockerfile
-[`3.12/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.12/slim-bullseye/Dockerfile
-[`3.11/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.11/slim-bullseye/Dockerfile
-[`3.10/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.10/slim-bullseye/Dockerfile
-[`3.9/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.9/slim-bullseye/Dockerfile
 [`3.8/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.8/slim-bullseye/Dockerfile
+[`3.9/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.9/slim-bullseye/Dockerfile
+[`3.10/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.10/slim-bullseye/Dockerfile
+[`3.11/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.11/slim-bullseye/Dockerfile
+[`3.12/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.12/slim-bullseye/Dockerfile
+[`3.13-rc/slim-bullseye`]: https://github.com/docker-library/python/blob/HEAD/3.13-rc/slim-bullseye/Dockerfile
