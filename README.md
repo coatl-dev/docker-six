@@ -22,6 +22,8 @@ and [Jython](#jython) pre-installed.
 
 ### Jython
 
+- [`jython-3.11`, `jython-3.11.9`] - Comes with Python 3.11.9, 2.7.18, Jython
+  2.7.3 and Java 17.
 - [`jython-3.10`, `jython-3.10.14`] - Comes with Python 3.10.14, 2.7.18, Jython
   2.7.3 and Java 17.
 - [`jython-3.9`, `jython-3.9.19`] - Comes with Python 3.9.19, 2.7.18, Jython
@@ -113,6 +115,7 @@ Based on the [Docker "Official Image"] for [`python`] using the following
 [`3.10`, `3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/python/Dockerfile
 [`jython-3.10`, `jython-3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/jython/Dockerfile
 [`3.11`, `3.11.9`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/python/Dockerfile
+[`jython-3.11`, `jython-3.11.9`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/jython/Dockerfile
 [`3.12`, `3.12.3`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/python/Dockerfile
 [`3.13.0b1`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/python/Dockerfile
 [`jython-3.13.0b1`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/jython/Dockerfile
