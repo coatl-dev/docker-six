@@ -57,8 +57,6 @@ jobs:
         id: build
         uses: docker/build-push-action@v5
         with:
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           context: ./${{ steps.dockerfile.outputs.subdir }}/jython
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           platforms: ${{ matrix.platform }}
