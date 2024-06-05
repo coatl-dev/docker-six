@@ -13,16 +13,14 @@ LABEL \
 
 ENV DEBIAN_FRONTEND noninteractive
 
+ENV PYTHON_ROOT /opt/python
+
 # https://github.com/docker-library/python/issues/147
 ENV PYTHONIOENCODING UTF-8
 
-# pip
 ENV PIP_NO_CACHE_DIR 1
 ENV PIP_NO_PYTHON_VERSION_WARNING 1
 ENV PIP_ROOT_USER_ACTION ignore
-
-# Python
-ENV PYTHON_ROOT /opt/python
 
 # base dependencies
 RUN set -eux; \
@@ -155,8 +153,7 @@ RUN set -eux; \
             -o \
             \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
         \) -exec rm -rf '{}' + \
-    ; \
-    rm "/tmp/Python-$PYTHON2_VERSION.tgz"
+    ;
 
 # update Pip, Setuptools and Wheel packages
 RUN set -eux; \
@@ -222,8 +219,7 @@ RUN set -eux; \
             \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
             -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
         \) -exec rm -rf '{}' + \
-    ; \
-    rm "/tmp/Python-${PYTHON3_VERSION}.tgz"
+    ;
 
 # update Pip, Setuptools and Wheel packages
 RUN set -eux; \
