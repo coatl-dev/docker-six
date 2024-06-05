@@ -17,16 +17,16 @@ ENV DEBIAN_FRONTEND noninteractive
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
+ENV JYTHON_HOME /opt/jython
+
+ENV PYTHON_ROOT /opt/python
+
 # https://github.com/docker-library/python/issues/147
 ENV PYTHONIOENCODING UTF-8
 
-# pip
 ENV PIP_NO_CACHE_DIR 1
 ENV PIP_NO_PYTHON_VERSION_WARNING 1
 ENV PIP_ROOT_USER_ACTION ignore
-
-# Python
-ENV PYTHON_ROOT /opt/python
 
 # base dependencies
 RUN set -eux; \
@@ -48,11 +48,31 @@ RUN set -eux; \
         git \
         make \
         netbase \
+        openjdk-17-jre \
         sudo \
         tzdata \
         wget \
     ; \
     rm -rf /var/lib/apt/lists/*
+
+# >============================================================================<
+
+FROM base AS jython
+
+ENV JYTHON_VERSION 2.7.3
+
+WORKDIR /tmp
+
+RUN set -eux; \
+    \
+    wget -q "https://repo1.maven.org/maven2/org/python/jython-installer/${JYTHON_VERSION}/jython-installer-${JYTHON_VERSION}.jar"; \
+    \
+    java -jar "jython-installer-${JYTHON_VERSION}.jar" \
+        --silent \
+        --type standard \
+        --directory "${JYTHON_HOME}"; \
+    \
+    rm "jython-installer-${JYTHON_VERSION}.jar"
 
 # >============================================================================<
 
@@ -159,8 +179,7 @@ RUN set -eux; \
             -o \
             \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
         \) -exec rm -rf '{}' + \
-    ; \
-    rm "/tmp/Python-$PYTHON2_VERSION.tgz"
+    ;
 
 # update Pip, Setuptools and Wheel packages
 RUN set -eux; \
@@ -226,8 +245,7 @@ RUN set -eux; \
             \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
             -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
         \) -exec rm -rf '{}' + \
-    ; \
-    rm "/tmp/Python-${PYTHON3_VERSION}.tgz"
+    ;
 
 # update Pip, Setuptools and Wheel packages
 RUN set -eux; \
@@ -249,32 +267,11 @@ RUN set -eux; \
 
 FROM base AS final
 
+COPY --from=jython ${JYTHON_HOME}/ ${JYTHON_HOME}/
 COPY --from=python2 ${PYTHON_ROOT}/2/ ${PYTHON_ROOT}/2/
 COPY --from=python2 /etc/ld.so.conf.d/python2.conf /etc/ld.so.conf.d/python2.conf
 COPY --from=python3 ${PYTHON_ROOT}/3/ ${PYTHON_ROOT}/3/
 COPY --from=python3 /etc/ld.so.conf.d/python3.conf /etc/ld.so.conf.d/python3.conf
-
-# Jython
-ENV JYTHON_HOME /opt/jython/2.7.3
-
-RUN set -eux; \
-    \
-    apt-get update --quiet; \
-    apt-get install --yes --no-install-recommends \
-        openjdk-17-jre \
-    ; \
-    rm -rf /var/lib/apt/lists/*
-
-RUN set -eux; \
-    \
-    wget -q -O /tmp/jython-installer.jar "https://repo1.maven.org/maven2/org/python/jython-installer/2.7.3/jython-installer-2.7.3.jar"; \
-    \
-    java -jar /tmp/jython-installer.jar \
-        --silent \
-        --type standard \
-        --directory "${JYTHON_HOME}"; \
-    \
-    rm /tmp/jython-installer.jar
 
 # ensure local python is preferred over distribution python
 ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:${JYTHON_HOME}/bin:$PATH
