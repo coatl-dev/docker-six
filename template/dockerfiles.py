@@ -4,7 +4,7 @@ import os
 from jinja2 import Environment, FileSystemLoader
 
 JYTHON_VERSION = "2.7.3"
-PYTHON3_VERSIONS = ["3.8.19", "3.9.19", "3.10.14", "3.11.9", "3.12.3", "3.13.0b2"]
+PYTHON3_VERSIONS = ["3.8.19", "3.9.19", "3.10.14", "3.11.9", "3.12.4", "3.13.0b2"]
 
 ENVIRONMENT = Environment(
     trim_blocks=True, lstrip_blocks=True, loader=FileSystemLoader("template/")
