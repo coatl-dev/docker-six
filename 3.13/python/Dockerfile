@@ -179,7 +179,7 @@ RUN set -eux; \
 
 FROM builder AS python3
 
-ENV PYTHON3_VERSION 3.13.0b1
+ENV PYTHON3_VERSION 3.13.0b2
 
 WORKDIR /tmp
 

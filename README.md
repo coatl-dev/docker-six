@@ -18,7 +18,7 @@ and [Jython](#jython) pre-installed.
 
 #### Python Alpha, Beta and Release Candidates
 
-- [`3.13.0b1`] - Comes with Python 3.13.0b1 and 2.7.18.
+- [`3.13.0b2`] - Comes with Python 3.13.0b2 and 2.7.18.
 
 ### Jython
 
@@ -35,7 +35,7 @@ and [Jython](#jython) pre-installed.
 
 #### Jython Alpha, Beta and Release Candidates
 
-- [`jython-3.13.0b1`] - Comes with Python 3.13.0b1, 2.7.18 and Jython 2.7.3.
+- [`jython-3.13.0b2`] - Comes with Python 3.13.0b2, 2.7.18 and Jython 2.7.3.
 
 For more tags, [click here].
 
@@ -110,18 +110,18 @@ Based on the [Docker "Official Image"] for [`python`] using the following
 - [`3.13-rc/slim-bullseye`]
 
 <!-- Dockerfiles -->
-[`3.8`, `3.8.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.8/python/Dockerfile
-[`jython-3.8`, `jython-3.8.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.8/jython/Dockerfile
-[`3.9`, `3.9.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.9/python/Dockerfile
-[`jython-3.9`, `jython-3.9.19`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.9/jython/Dockerfile
-[`3.10`, `3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/python/Dockerfile
-[`jython-3.10`, `jython-3.10.14`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.10/jython/Dockerfile
-[`3.11`, `3.11.9`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/python/Dockerfile
-[`jython-3.11`, `jython-3.11.9`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.11/jython/Dockerfile
-[`3.12`, `3.12.3`, `latest`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/python/Dockerfile
-[`jython-3.12`, `jython-3.12.3`, `jython`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.12/jython/Dockerfile
-[`3.13.0b1`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/python/Dockerfile
-[`jython-3.13.0b1`]: https://github.com/coatl-dev/docker-six/blob/HEAD/3.13/jython/Dockerfile
+[`3.8`, `3.8.19`]: https://github.com/coatl-dev/docker-six/blob/3.8.19/3.8/python/Dockerfile
+[`jython-3.8`, `jython-3.8.19`]: https://github.com/coatl-dev/docker-six/blob/3.8.19/3.8/jython/Dockerfile
+[`3.9`, `3.9.19`]: https://github.com/coatl-dev/docker-six/blob/3.9.19/3.9/python/Dockerfile
+[`jython-3.9`, `jython-3.9.19`]: https://github.com/coatl-dev/docker-six/blob/3.9.19/3.9/jython/Dockerfile
+[`3.10`, `3.10.14`]: https://github.com/coatl-dev/docker-six/blob/3.10.14/3.10/python/Dockerfile
+[`jython-3.10`, `jython-3.10.14`]: https://github.com/coatl-dev/docker-six/blob/3.10.14/3.10/jython/Dockerfile
+[`3.11`, `3.11.9`]: https://github.com/coatl-dev/docker-six/blob/3.11.9/3.11/python/Dockerfile
+[`jython-3.11`, `jython-3.11.9`]: https://github.com/coatl-dev/docker-six/blob/3.11.9/3.11/jython/Dockerfile
+[`3.12`, `3.12.3`, `latest`]: https://github.com/coatl-dev/docker-six/blob/3.12.3/3.12/python/Dockerfile
+[`jython-3.12`, `jython-3.12.3`, `jython`]: https://github.com/coatl-dev/docker-six/blob/3.12.3/3.12/jython/Dockerfile
+[`3.13.0b2`]: https://github.com/coatl-dev/docker-six/blob/3.13.0b2/3.13/python/Dockerfile
+[`jython-3.13.0b2`]: https://github.com/coatl-dev/docker-six/blob/3.13.0b2/3.13/jython/Dockerfile
 <!-- External links -->
 [Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
 [click here]: https://hub.docker.com/repository/docker/coatldev/six/tags
