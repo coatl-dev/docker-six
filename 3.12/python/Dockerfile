@@ -26,17 +26,22 @@ ENV PIP_NO_CACHE_DIR 1
 ENV PIP_NO_PYTHON_VERSION_WARNING 1
 ENV PIP_ROOT_USER_ACTION ignore
 
-# base dependencies
+# add git-core/ppa
 RUN set -eux; \
     \
-    apt-get update --quiet; \
+    apt-get update; \
+    apt-get upgrade --yes; \
     apt-get install --yes --no-install-recommends \
-        gnupg \
-        software-properties-common \
-    ; \
+        software-properties-common; \
+    \
     add-apt-repository --yes \
         ppa:git-core/ppa \
     ; \
+    rm -rf /var/lib/apt/lists/*
+
+# install base dependencies
+RUN set -eux; \
+    apt-get update; \
     apt-get install --yes --no-install-recommends \
         build-essential \
         bzip2 \
