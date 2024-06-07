@@ -75,9 +75,7 @@ RUN set -eux; \
     java -jar "jython-installer-${JYTHON_VERSION}.jar" \
         --silent \
         --type standard \
-        --directory "${JYTHON_HOME}"; \
-    \
-    rm "jython-installer-${JYTHON_VERSION}.jar"
+        --directory "${JYTHON_HOME}"
 
 # >============================================================================<
 
