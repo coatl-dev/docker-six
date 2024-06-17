@@ -1,9 +1,3 @@
-#
-# NOTE: THIS DOCKERFILE IS GENERATED VIA "dockerfiles.py"
-#
-# PLEASE DO NOT EDIT IT DIRECTLY.
-#
-
 FROM ubuntu:noble AS base
 
 LABEL \
@@ -13,16 +7,10 @@ LABEL \
 
 ENV DEBIAN_FRONTEND noninteractive
 
-{% if version.split('.')[1] != '13' %}
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
-{% endif %}
-{% if is_jython %}
-ENV JYTHON_HOME /opt/jython
-
-{% endif %}
 ENV PYTHON_ROOT /opt/python
 
 # https://github.com/docker-library/python/issues/147
@@ -31,6 +19,8 @@ ENV PYTHONIOENCODING UTF-8
 ENV PIP_NO_CACHE_DIR 1
 ENV PIP_NO_PYTHON_VERSION_WARNING 1
 ENV PIP_ROOT_USER_ACTION ignore
+
+ENV GIT_VERSION 1:2.45.2-0ppa1~ubuntu24.04.1
 
 # add git-core/ppa
 RUN set -eux; \
@@ -54,12 +44,9 @@ RUN set -eux; \
         ca-certificates \
         curl \
         gcc \
-        git \
+        git=${GIT_VERSION} \
         make \
         netbase \
-        {% if is_jython %}
-        openjdk-17-jre \
-        {% endif %}
         sudo \
         tzdata \
         wget \
@@ -67,25 +54,6 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 # >============================================================================<
-{% if is_jython %}
-
-FROM base AS jython
-
-ENV JYTHON_VERSION {{ jython_version }}
-
-WORKDIR /tmp
-
-RUN set -eux; \
-    \
-    wget -q "https://repo1.maven.org/maven2/org/python/jython-installer/${JYTHON_VERSION}/jython-installer-${JYTHON_VERSION}.jar"; \
-    \
-    java -jar "jython-installer-${JYTHON_VERSION}.jar" \
-        --silent \
-        --type standard \
-        --directory "${JYTHON_HOME}"
-
-# >============================================================================<
-{% endif %}
 
 FROM base as builder
 
@@ -192,11 +160,19 @@ RUN set -eux; \
         \) -exec rm -rf '{}' + \
     ;
 
-# update Pip, Setuptools and Wheel packages
+# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
+ENV PYTHON_PIP_VERSION 20.3.4
+# https://github.com/pypa/get-pip
+ENV PYTHON_GET_PIP_URL https://raw.githubusercontent.com/pypa/get-pip/3843bff3a0a61da5b63ea0b7d34794c5c51a2f11/get-pip.py
+
 RUN set -eux; \
     \
-    "${PYTHON_ROOT}/2/bin/python${PYTHON2_VERSION%.*}" -m ensurepip --default-pip; \
-    "${PYTHON_ROOT}/2/bin/python${PYTHON2_VERSION%.*}" -m pip install --upgrade pip setuptools wheel
+    wget -q "$PYTHON_GET_PIP_URL"; \
+	\
+	"${PYTHON_ROOT}/2/bin/python${PYTHON2_VERSION%.*}" get-pip.py \
+		--disable-pip-version-check \
+		--no-cache-dir \
+		"pip==$PYTHON_PIP_VERSION"
 
 # add some soft links for comfortable usage
 WORKDIR "${PYTHON_ROOT}/2/bin"
@@ -211,7 +187,7 @@ RUN set -eux; \
 
 FROM builder AS python3
 
-ENV PYTHON3_VERSION {{ version }}
+ENV PYTHON3_VERSION 3.12.4
 
 WORKDIR /tmp
 
@@ -235,17 +211,27 @@ RUN set -eux; \
         --enable-shared \
         --with-lto \
         --with-system-expat \
+        --without-ensurepip \
     ; \
-    \
+	nproc="$(nproc)"; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
 	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
 	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
-	make -s -j "$(nproc)" \
+	make -s -j "$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:-}" \
 		"PROFILE_TASK=${PROFILE_TASK:-}" \
 	; \
     \
+    # https://github.com/docker-library/python/issues/784
+    # prevent accidental usage of a system installed libpython of the same version
+    rm python; \
+    make -s -j "$nproc" \
+        "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+        "LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
+        "PROFILE_TASK=${PROFILE_TASK:-}" \
+        python \
+    ; \
     make altinstall; \
     \
     echo "${PYTHON_ROOT}/3/lib" | tee /etc/ld.so.conf.d/python3.conf; \
@@ -258,10 +244,22 @@ RUN set -eux; \
         \) -exec rm -rf '{}' + \
     ;
 
-# update Pip, Setuptools and Wheel packages
+# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
+ENV PYTHON_PIP_VERSION 24.0
+# https://github.com/pypa/get-pip
+ENV PYTHON_GET_PIP_URL https://raw.githubusercontent.com/pypa/get-pip/${PYTHON_PIP_VERSION}/public/get-pip.py
+
 RUN set -eux; \
     \
-    "${PYTHON_ROOT}/3/bin/python${PYTHON3_VERSION%.*}" -m pip install --upgrade pip setuptools wheel
+    wget -q "$PYTHON_GET_PIP_URL"; \
+    \
+	export PYTHONDONTWRITEBYTECODE=1; \
+    \
+    "${PYTHON_ROOT}/3/bin/python${PYTHON3_VERSION%.*}" get-pip.py \
+        --disable-pip-version-check \
+        --no-cache-dir \
+        --no-compile \
+        "pip==$PYTHON_PIP_VERSION"
 
 # add some soft links for comfortable usage
 WORKDIR "${PYTHON_ROOT}/3/bin"
@@ -278,16 +276,13 @@ RUN set -eux; \
 
 FROM base AS final
 
-{% if is_jython %}
-COPY --from=jython ${JYTHON_HOME}/ ${JYTHON_HOME}/
-{% endif %}
 COPY --from=python2 ${PYTHON_ROOT}/2/ ${PYTHON_ROOT}/2/
 COPY --from=python2 /etc/ld.so.conf.d/python2.conf /etc/ld.so.conf.d/python2.conf
 COPY --from=python3 ${PYTHON_ROOT}/3/ ${PYTHON_ROOT}/3/
 COPY --from=python3 /etc/ld.so.conf.d/python3.conf /etc/ld.so.conf.d/python3.conf
 
 # ensure local python is preferred over distribution python
-ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:{% if is_jython %}${JYTHON_HOME}/bin:{% endif %}$PATH
+ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH
 
 # link Python libraries
 RUN set -eux; \
