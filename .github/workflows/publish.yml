@@ -3,7 +3,7 @@ name: publish-python
 on:
   push:
     branches:
-      - main
+      - coatl
 
 env:
   REGISTRY_IMAGE: coatldev/six
