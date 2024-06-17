@@ -1,9 +1,9 @@
-name: publish-jython
+name: publish-python
 
 on:
-  release:
-    types:
-      - published
+  push:
+    branches:
+      - main
 
 env:
   REGISTRY_IMAGE: coatldev/six
@@ -25,11 +25,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Get Dockerfile subdirectory
-        id: dockerfile
-        run: |
-          echo "subdir=$(echo ${{ github.event.release.tag_name }} | cut -d '.' -f 1,2)" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -57,21 +52,21 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
-          context: ./${{ steps.dockerfile.outputs.subdir }}/jython
+          context: .
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           platforms: ${{ matrix.platform }}
 
       - name: Export digest
         run: |
-          mkdir -p /tmp/jython-digests
+          mkdir -p /tmp/python-digests
           digest="${{ steps.build.outputs.digest }}"
-          touch "/tmp/jython-digests/${digest#sha256:}"
+          touch "/tmp/python-digests/${digest#sha256:}"
 
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
           name: digests-${{ env.PLATFORM_PAIR }}
-          path: /tmp/jython-digests/*
+          path: /tmp/python-digests/*
           if-no-files-found: error
           retention-days: 1
 
@@ -83,12 +78,25 @@ jobs:
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
-          path: /tmp/jython-digests
+          path: /tmp/python-digests
           pattern: digests-*
           merge-multiple: true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Extract version number
+        id: python
+        run: |
+          # Extract the Python version from the Dockerfile
+          VERSION=$(grep 'ENV PYTHON3_VERSION' Dockerfile | awk '{print $3}')
+          echo "VERSION=${VERSION}"
+          # Trim the version to the first two segments (major.minor)
+          MAJOR_MINOR=$(echo $VERSION | cut -d'.' -f1-2)
+          echo "MAJOR_MINOR=${MAJOR_MINOR}"
+          # Export the extracted version to GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "major_minor=${MAJOR_MINOR}" >> $GITHUB_OUTPUT
 
       - name: Docker meta
         id: meta
@@ -96,11 +104,11 @@ jobs:
         with:
           images: ${{ env.REGISTRY_IMAGE }}
           tags: |
-            type=pep440,prefix=jython-,pattern={{version}}
-            type=pep440,prefix=jython-,pattern={{major}}.{{minor}}
-            type=raw,enable=${{ startsWith(github.ref, 'refs/tags/3.12') }},value=jython
-          flavor: |
-            latest=false
+            type=raw,value=${{ steps.python.outputs.version }}
+            type=raw,value=${{ steps.python.outputs.major_minor }}
+            type=raw,value={{date 'YYYYMMDD'}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix=sha-
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -109,7 +117,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Create manifest list and push
-        working-directory: /tmp/jython-digests
+        working-directory: /tmp/python-digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
