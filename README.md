@@ -3,8 +3,8 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/coatl-dev/docker-six/coatl.svg)](https://results.pre-commit.ci/latest/github/coatl-dev/docker-six/coatl)
 [![Docker Pulls](https://img.shields.io/docker/pulls/coatldev/six)](https://hub.docker.com/r/coatldev/six)
 
-Docker image based on Ubuntu 24.04 (Noble Numbat) with Python 2.7.18 and Python
-3.12 pre-installed.
+Docker image based on Ubuntu 24.04 (Noble Numbat) with Python 3.12 and 2.7.18
+pre-installed.
 
 ## Supported tags
 

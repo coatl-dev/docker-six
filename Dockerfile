@@ -55,7 +55,7 @@ RUN set -eux; \
 
 # >============================================================================<
 
-FROM base as builder
+FROM base AS builder
 
 RUN set -eux; \
     \
@@ -163,7 +163,7 @@ RUN set -eux; \
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 20.3.4
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://raw.githubusercontent.com/pypa/get-pip/3843bff3a0a61da5b63ea0b7d34794c5c51a2f11/get-pip.py
+ENV PYTHON_GET_PIP_URL https://raw.githubusercontent.com/pypa/get-pip/${PYTHON_PIP_VERSION}/get-pip.py
 
 RUN set -eux; \
     \
