@@ -8,8 +8,6 @@ Docker image based on Ubuntu 24.04 (Noble Numbat) with Python 2.7.18 and Python
 
 ## Supported tags
 
-### Python
-
 - [`3.12`, `3.12.4`, `latest`] - Comes with Python 3.12.4 and 2.7.18.
 
 For more tags, [click here].
