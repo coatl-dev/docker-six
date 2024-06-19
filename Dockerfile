@@ -55,7 +55,7 @@ RUN set -eux; \
 
 # >============================================================================<
 
-FROM base as builder
+FROM base AS builder
 
 RUN set -eux; \
     \
@@ -162,8 +162,10 @@ RUN set -eux; \
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 20.3.4
+ENV PYTHON_SETUPTOOLS_VERSION 44.1.1
+ENV PYTHON_WHEEL_VERSION 0.37.1
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://raw.githubusercontent.com/pypa/get-pip/3843bff3a0a61da5b63ea0b7d34794c5c51a2f11/get-pip.py
+ENV PYTHON_GET_PIP_URL https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/2.7/get-pip.py
 
 RUN set -eux; \
     \
@@ -172,7 +174,9 @@ RUN set -eux; \
 	"${PYTHON_ROOT}/2/bin/python${PYTHON2_VERSION%.*}" get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
-		"pip==$PYTHON_PIP_VERSION"
+		"pip==$PYTHON_PIP_VERSION" \
+		"setuptools==$PYTHON_SETUPTOOLS_VERSION" \
+		"wheel==$PYTHON_WHEEL_VERSION"
 
 # add some soft links for comfortable usage
 WORKDIR "${PYTHON_ROOT}/2/bin"
@@ -246,8 +250,10 @@ RUN set -eux; \
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 24.0
+ENV PYTHON_SETUPTOOLS_VERSION 70.1.0
+ENV PYTHON_WHEEL_VERSION 0.43.0
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://raw.githubusercontent.com/pypa/get-pip/${PYTHON_PIP_VERSION}/public/get-pip.py
+ENV PYTHON_GET_PIP_URL https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
 
 RUN set -eux; \
     \
@@ -259,7 +265,9 @@ RUN set -eux; \
         --disable-pip-version-check \
         --no-cache-dir \
         --no-compile \
-        "pip==$PYTHON_PIP_VERSION"
+        "pip==$PYTHON_PIP_VERSION" \
+		"setuptools==$PYTHON_SETUPTOOLS_VERSION" \
+		"wheel==$PYTHON_WHEEL_VERSION"
 
 # add some soft links for comfortable usage
 WORKDIR "${PYTHON_ROOT}/3/bin"
