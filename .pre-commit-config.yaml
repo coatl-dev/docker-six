@@ -1,5 +1,6 @@
 ci:
   autoupdate_commit_msg: 'build(deps): pre-commit autoupdate'
+  autoupdate_branch: 'dev'
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -8,7 +9,7 @@ repos:
       - id: check-yaml
       - id: trailing-whitespace
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.28.5
+    rev: 0.28.6
     hooks:
     - id: check-github-workflows
   - repo: https://github.com/coatl-dev/hadolint-coatl

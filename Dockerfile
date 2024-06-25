@@ -5,22 +5,22 @@ LABEL \
     repository="https://github.com/coatl-dev/docker-six" \
     vendor="coatl.dev"
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 
-ENV PYTHON_ROOT /opt/python
+ENV PYTHON_ROOT=/opt/python
 
 # https://github.com/docker-library/python/issues/147
-ENV PYTHONIOENCODING UTF-8
+ENV PYTHONIOENCODING=UTF-8
 
-ENV PIP_NO_CACHE_DIR 1
-ENV PIP_NO_PYTHON_VERSION_WARNING 1
-ENV PIP_ROOT_USER_ACTION ignore
+ENV PIP_NO_CACHE_DIR=1
+ENV PIP_NO_PYTHON_VERSION_WARNING=1
+ENV PIP_ROOT_USER_ACTION=ignore
 
-ENV GIT_VERSION 1:2.45.2-0ppa1~ubuntu24.04.1
+ENV GIT_VERSION=1:2.45.2-0ppa1~ubuntu24.04.1
 
 # add git-core/ppa
 RUN set -eux; \
@@ -85,7 +85,7 @@ RUN set -eux; \
 
 FROM builder AS python2
 
-ENV PYTHON2_VERSION 2.7.18
+ENV PYTHON2_VERSION=2.7.18
 
 WORKDIR /tmp
 
@@ -161,11 +161,11 @@ RUN set -eux; \
     ;
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 20.3.4
-ENV PYTHON_SETUPTOOLS_VERSION 44.1.1
-ENV PYTHON_WHEEL_VERSION 0.37.1
+ENV PYTHON_PIP_VERSION=20.3.4
+ENV PYTHON_SETUPTOOLS_VERSION=44.1.1
+ENV PYTHON_WHEEL_VERSION=0.37.1
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/2.7/get-pip.py
+ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/2.7/get-pip.py
 
 RUN set -eux; \
     \
@@ -191,7 +191,7 @@ RUN set -eux; \
 
 FROM builder AS python3
 
-ENV PYTHON3_VERSION 3.12.4
+ENV PYTHON3_VERSION=3.12.4
 
 WORKDIR /tmp
 
@@ -249,11 +249,11 @@ RUN set -eux; \
     ;
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 24.1
-ENV PYTHON_SETUPTOOLS_VERSION 70.1.0
-ENV PYTHON_WHEEL_VERSION 0.43.0
+ENV PYTHON_PIP_VERSION=24.1
+ENV PYTHON_SETUPTOOLS_VERSION=70.1.1
+ENV PYTHON_WHEEL_VERSION=0.43.0
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
+ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
 
 RUN set -eux; \
     \
@@ -290,7 +290,7 @@ COPY --from=python3 ${PYTHON_ROOT}/3/ ${PYTHON_ROOT}/3/
 COPY --from=python3 /etc/ld.so.conf.d/python3.conf /etc/ld.so.conf.d/python3.conf
 
 # ensure local python is preferred over distribution python
-ENV PATH ${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH
+ENV PATH="${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH"
 
 # link Python libraries
 RUN set -eux; \
