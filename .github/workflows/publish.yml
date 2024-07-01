@@ -58,8 +58,8 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ matrix.platform }}
+          cache-to: type=gha,scope=${{ matrix.platform }},mode=max
           context: .
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           platforms: ${{ matrix.platform }}
