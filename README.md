@@ -38,7 +38,7 @@ jobs:
         displayName: Change owner
 
       - script: |
-          python -m pip install --upgrade tox
+          python -m pip install tox
         displayName: Install dependencies
 
       - script: |
@@ -62,7 +62,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade tox
+          python -m pip install tox
 
       - name: Run tests
         run: |
