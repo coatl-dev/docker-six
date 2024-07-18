@@ -11,13 +11,37 @@ on:
     - cron: '30 1 * * 1,5'
 
 jobs:
+  semver:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.tags.outputs.version }}
+      major_minor: ${{ steps.tags.outputs.major_minor }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version number
+        id: tags
+        run: |
+          # Extract the Python version from the Dockerfile
+          VERSION=$(grep 'ENV PYTHON3_VERSION' Dockerfile | cut -d '=' -f 2)
+          echo "VERSION=${VERSION}"
+          # Trim the version to the first two segments (major.minor)
+          MAJOR_MINOR=$(echo $VERSION | cut -d'.' -f1-2)
+          echo "MAJOR_MINOR=${MAJOR_MINOR}"
+          # Export the extracted version to GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "major_minor=${MAJOR_MINOR}" >> $GITHUB_OUTPUT
+
   publish:
+    needs: semver
     uses: coatl-dev/workflows/.github/workflows/docker-publish-multi-platform.yml@v4
     with:
       registry-image: coatldev/six
       metadata-tags: |
-        type=raw,value=${{ needs.build.outputs.version }}
-        type=raw,value=${{ needs.build.outputs.major_minor }}
+        type=raw,value=${{ needs.semver.outputs.version }}
+        type=raw,value=${{ needs.semver.outputs.major_minor }}
         type=raw,value=latest,enable={{is_default_branch}}
       dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
     secrets:
