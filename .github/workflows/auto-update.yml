@@ -48,10 +48,10 @@ jobs:
       - name: Commit and push changes
         if: ${{ steps.git-diff.outputs.diff == 'true' }}
         run: |
-          git checkout -B coatl-dev-autoupdate-requirements
-          git add .pre-commit-config.yaml
+          git checkout -B coatl-dev-autoupdate
+          git add -u
           git commit -m 'chore(python3): update requirements'
-          git push --force --set-upstream origin coatl-dev-autoupdate-requirements
+          git push --force --set-upstream origin coatl-dev-autoupdate
 
       - name: Create Pull Request
         if: ${{ steps.git-diff.outputs.diff == 'true' }}
