@@ -8,7 +8,7 @@ on:
       - '.github/workflows/publish.yml'
       - 'Dockerfile'
   schedule:
-    - cron: '30 1 * * 1,5'
+    - cron: '0 20 * * 2,6'
 
 jobs:
   semver:
