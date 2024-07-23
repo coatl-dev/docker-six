@@ -3,6 +3,7 @@ name: auto-update
 on:
   schedule:
     - cron: '0 20 * * 0'
+    - cron: '0 18 10 2-12/2 *'
   workflow_dispatch:
 
 jobs:
@@ -11,6 +12,15 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Fetch latest Python 3.12 release
+        if: github.event.schedule == '0 18 10 2-12/2 *'
+        run: |
+          python3_version=$(curl -s https://www.python.org/ftp/python/ | grep -oP '3\.12\.\d+/' | uniq | sort -V | tail -n 1 | tr -d '/')
+
+          echo "python312: $python3_version"
+
+          sed -i "s/ENV PYTHON3_VERSION=.*/ENV PYTHON3_VERSION=$python3_version/" Dockerfile
 
       - name: Update requirements
         uses: coatl-dev/actions/pip-compile@v3
