@@ -250,7 +250,7 @@ RUN set -eux; \
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON3_PIP_VERSION=24.2
-ENV PYTHON3_SETUPTOOLS_VERSION=72.0.0
+ENV PYTHON3_SETUPTOOLS_VERSION=72.1.0
 ENV PYTHON3_WHEEL_VERSION=0.43.0
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
