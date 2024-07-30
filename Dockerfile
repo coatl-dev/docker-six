@@ -20,33 +20,25 @@ ENV PIP_NO_CACHE_DIR=1
 ENV PIP_NO_PYTHON_VERSION_WARNING=1
 ENV PIP_ROOT_USER_ACTION=ignore
 
-ENV GIT_VERSION=1:2.46.0-0ppa1~ubuntu24.04.1
-
-# add git-core/ppa
-RUN set -eux; \
-    \
-    apt-get update; \
-    apt-get upgrade --yes; \
-    apt-get install --yes --no-install-recommends \
-        software-properties-common; \
-    \
-    add-apt-repository --yes \
-        ppa:git-core/ppa \
-    ; \
-    rm -rf /var/lib/apt/lists/*
-
 # install base dependencies
 RUN set -eux; \
-    apt-get update; \
+    \
+    apt-get update --quiet; \
+    apt-get upgrade --yes; \
     apt-get install --yes --no-install-recommends \
         build-essential \
         bzip2 \
         ca-certificates \
+        cdbs \
         curl \
+        debhelper \
+        expat \
         gcc \
-        git=${GIT_VERSION} \
+        libcurl3t64-gnutls \
+        libcurl4t64 \
         make \
         netbase \
+        openssl \
         sudo \
         tzdata \
         wget \
@@ -61,10 +53,13 @@ RUN set -eux; \
     \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
+        dh-autoreconf \
         dpkg-dev \
+        gettext \
         libbluetooth-dev \
         libbz2-dev \
         libc6-dev \
+        libcurl4-gnutls-dev \
         libdb-dev \
         libexpat1-dev \
         libffi-dev \
@@ -83,7 +78,29 @@ RUN set -eux; \
 
 # >============================================================================<
 
-FROM builder AS python2
+FROM builder AS git-builder
+
+ENV GIT_VERSION=2.46.0
+
+WORKDIR /tmp
+
+RUN set -eux; \
+    \
+    wget -q "https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz"; \
+    tar -zxf "v${GIT_VERSION}.tar.gz"
+
+WORKDIR "/tmp/git-${GIT_VERSION}"
+
+RUN set -eux; \
+    \
+    make configure; \
+    ./configure --prefix=/usr/local; \
+    make all; \
+    make install
+
+# >============================================================================<
+
+FROM builder AS python2-builder
 
 ENV PYTHON2_VERSION=2.7.18
 
@@ -189,7 +206,7 @@ RUN set -eux; \
 
 # >============================================================================<
 
-FROM builder AS python3
+FROM builder AS python3-builder
 
 ENV PYTHON3_VERSION=3.12.4
 
@@ -284,10 +301,11 @@ RUN set -eux; \
 
 FROM base AS final
 
-COPY --from=python2 ${PYTHON_ROOT}/2/ ${PYTHON_ROOT}/2/
-COPY --from=python2 /etc/ld.so.conf.d/python2.conf /etc/ld.so.conf.d/python2.conf
-COPY --from=python3 ${PYTHON_ROOT}/3/ ${PYTHON_ROOT}/3/
-COPY --from=python3 /etc/ld.so.conf.d/python3.conf /etc/ld.so.conf.d/python3.conf
+COPY --from=git-builder /usr/local /usr/local
+COPY --from=python2-builder ${PYTHON_ROOT}/2/ ${PYTHON_ROOT}/2/
+COPY --from=python2-builder /etc/ld.so.conf.d/python2.conf /etc/ld.so.conf.d/python2.conf
+COPY --from=python3-builder ${PYTHON_ROOT}/3/ ${PYTHON_ROOT}/3/
+COPY --from=python3-builder /etc/ld.so.conf.d/python3.conf /etc/ld.so.conf.d/python3.conf
 
 # ensure local python is preferred over distribution python
 ENV PATH="${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH"
