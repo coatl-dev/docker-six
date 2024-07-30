@@ -2,8 +2,9 @@ name: auto-update
 
 on:
   schedule:
-    - cron: '0 20 * * 0'
-    - cron: '0 18 10 2-12/2 *'
+    - cron: '0 20 * * 0'        # Weekly
+    - cron: '0 18 14,28 * *'    # Twice a month
+    - cron: '0 18 10 2-12/2 *'  # Every two months
   workflow_dispatch:
 
 jobs:
@@ -12,6 +13,15 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Fetch latest Git release
+        if: github.event.schedule == '0 18 14,28 * *'
+        run: |
+          git_version=$(git ls-remote --tags https://github.com/git/git | grep -o 'refs/tags/v[0-9]*\.[0-9]*\.[0-9]*$' | sort -V | tail -n1 | sed 's/refs\/tags\///' | sed 's/^v//')
+
+          echo "git_version: $git_version"
+
+          sed -i "s/ENV GIT_VERSION=.*/ENV GIT_VERSION=$git_version/" Dockerfile
 
       - name: Fetch latest Python 3.12 release
         if: github.event.schedule == '0 18 10 2-12/2 *'
