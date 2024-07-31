@@ -26,25 +26,18 @@ RUN set -eux; \
     apt-get update --quiet; \
     apt-get upgrade --yes; \
     apt-get install --yes --no-install-recommends \
+        apt-utils \
         build-essential \
-        bzip2 \
         ca-certificates \
         curl \
-        gcc \
         git-man \
-        libc6 \
         libcurl3t64-gnutls \
         liberror-perl \
         libexpat1 \
-        libpcre2-8-0 \
-        make \
         netbase \
-        openssl \
-        perl \
         sudo \
         tzdata \
         wget \
-        zlib1g \
     ; \
     rm -rf /var/lib/apt/lists/*
 
@@ -56,9 +49,6 @@ RUN set -eux; \
     \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
-        dh-autoreconf \
-        dpkg-dev \
-        gettext \
         libbluetooth-dev \
         libbz2-dev \
         libc6-dev \
@@ -72,6 +62,8 @@ RUN set -eux; \
         libreadline-dev \
         libsqlite3-dev \
         libssl-dev \
+        libvips-dev \
+        packaging-dev \
         tk-dev \
         uuid-dev \
         xz-utils \
