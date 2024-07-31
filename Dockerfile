@@ -29,19 +29,22 @@ RUN set -eux; \
         build-essential \
         bzip2 \
         ca-certificates \
-        cdbs \
         curl \
-        debhelper \
-        expat \
         gcc \
+        git-man \
+        libc6 \
         libcurl3t64-gnutls \
-        libcurl4t64 \
+        liberror-perl \
+        libexpat1 \
+        libpcre2-8-0 \
         make \
         netbase \
         openssl \
+        perl \
         sudo \
         tzdata \
         wget \
+        zlib1g \
     ; \
     rm -rf /var/lib/apt/lists/*
 
