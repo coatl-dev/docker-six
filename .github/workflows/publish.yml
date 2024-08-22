@@ -36,13 +36,14 @@ jobs:
 
   publish:
     needs: semver
-    uses: coatl-dev/workflows/.github/workflows/docker-publish-multi-platform.yml@v4
+    uses: coatl-dev/workflows/.github/workflows/docker-publish-multi-platform.yml@v5
     with:
       registry-image: coatldev/six
       metadata-tags: |
         type=raw,value=${{ needs.semver.outputs.version }}
         type=raw,value=${{ needs.semver.outputs.major_minor }}
         type=raw,value=latest,enable={{is_default_branch}}
-      dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
+      registry-username: ${{ vars.DOCKERHUB_USERNAME }}
+      build-provenance: true
     secrets:
-      dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+      registry-password: ${{ secrets.DOCKERHUB_TOKEN }}
