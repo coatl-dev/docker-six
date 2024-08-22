@@ -34,6 +34,7 @@ RUN set -eux; \
         libcurl3t64-gnutls \
         liberror-perl \
         libexpat1 \
+        libsqlite3-0 \
         netbase \
         sudo \
         tzdata \
