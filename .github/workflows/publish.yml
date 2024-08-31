@@ -54,6 +54,7 @@ jobs:
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
       - name: Docker meta
+        id: meta
         uses: docker/metadata-action@v5
         with:
           images: |
@@ -81,7 +82,7 @@ jobs:
         with:
           cache-from: type=gha,scope=${{ matrix.runner.platform }}
           cache-to: type=gha,scope=${{ matrix.runner.platform }},mode=max
-          context: .
+          labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           platforms: ${{ matrix.runner.platform }}
 
