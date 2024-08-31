@@ -80,8 +80,8 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
-          cache-from: type=gha,scope=${{ matrix.runner.platform }}
-          cache-to: type=gha,scope=${{ matrix.runner.platform }},mode=max
+          cache-from: type=gha,scope=coatl-${{ env.PLATFORM_PAIR }}
+          cache-to: type=gha,scope=coatl-${{ env.PLATFORM_PAIR }},mode=max
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           platforms: ${{ matrix.runner.platform }}
