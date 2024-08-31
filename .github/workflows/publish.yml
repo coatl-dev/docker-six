@@ -10,8 +10,11 @@ on:
   schedule:
     - cron: '0 20 * * 2,6'
 
+env:
+  REGISTRY_IMAGE: coatldev/six
+
 jobs:
-  semver:
+  tagger:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.tags.outputs.version }}
@@ -34,16 +37,106 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "major_minor=${MAJOR_MINOR}" >> $GITHUB_OUTPUT
 
-  publish:
-    needs: semver
-    uses: coatl-dev/workflows/.github/workflows/docker-publish-multi-platform.yml@v5
-    with:
-      registry-image: coatldev/six
-      metadata-tags: |
-        type=raw,value=${{ needs.semver.outputs.version }}
-        type=raw,value=${{ needs.semver.outputs.major_minor }}
-        type=raw,value=latest,enable={{is_default_branch}}
-      registry-username: ${{ vars.DOCKERHUB_USERNAME }}
-      build-provenance: true
-    secrets:
-      registry-password: ${{ secrets.DOCKERHUB_TOKEN }}
+  build:
+    runs-on: ${{ matrix.runner.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runner:
+          - name: ubuntu-latest
+            platform: linux/amd64
+          - name: ubuntu-latest
+            platform: linux/arm64
+    steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.runner.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
+      - name: Docker meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.REGISTRY_IMAGE }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: ${{ matrix.runner.platform }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: ${{ matrix.runner.platform }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          cache-from: type=gha,scope=${{ matrix.runner.platform }}
+          cache-to: type=gha,scope=${{ matrix.runner.platform }},mode=max
+          context: .
+          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          platforms: ${{ matrix.runner.platform }}
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - tagger
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+          tags: |
+            type=raw,value=${{ needs.tagger.outputs.version }}
+            type=raw,value=${{ needs.tagger.outputs.major_minor }}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
