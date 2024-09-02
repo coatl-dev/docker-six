@@ -37,7 +37,7 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "major_minor=${MAJOR_MINOR}" >> $GITHUB_OUTPUT
 
-  publish:
+  docker:
     needs: tagger
     uses: coatl-dev/workflows/.github/workflows/docker-build-push-multi-platform.yml@v4
     with:
@@ -50,3 +50,18 @@ jobs:
       build-provenance: true
     secrets:
       registry-password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  quay:
+    needs:
+      - tagger
+      - docker
+    uses: coatl-dev/workflows/.github/workflows/docker-build-push-multi-platform.yml@v4
+    with:
+      registry-image: quay.io/coatldev/six
+      metadata-tags: |
+        type=raw,value=${{ needs.tagger.outputs.version }}
+        type=raw,value=${{ needs.tagger.outputs.major_minor }}
+        type=raw,value=latest,enable={{is_default_branch}}
+      registry-username: ${{ vars.QUAY_USERNAME }}
+    secrets:
+      registry-password: ${{ secrets.QUAY_ROBOT_TOKEN }}
