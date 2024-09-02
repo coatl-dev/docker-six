@@ -1,13 +1,15 @@
 # coatldev/six
 
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/coatl-dev/docker-six/coatl.svg "pre-commit.ci status")](https://results.pre-commit.ci/latest/github/coatl-dev/docker-six/coatl)
-[![Docker Pulls](https://img.shields.io/docker/pulls/coatldev/six "Docker Pulls")](https://hub.docker.com/r/coatldev/six)
-[![Docker Repository on Quay](https://quay.io/repository/coatldev/six/status "Docker Repository on Quay")](https://quay.io/repository/coatldev/six)
+[![Docker Repository on Docker Hub](https://img.shields.io/badge/hub.docker.com-white?logo=docker "Docker Repository on Docker Hub")](https://hub.docker.com/r/coatldev/six)
+[![Docker Repository on Quay](https://img.shields.io/badge/quay.io-red?logo=red-hat "Docker Repository on Quay")](https://quay.io/repository/coatldev/six)
 
 Docker image based on Ubuntu 24.04 (Noble Numbat) with Python 3.12 and 2.7.18
 pre-installed.
 
 ## Supported tags
+
+- [`3.12`, `latest`]
 
 For the full list of supported tags, see:
 
@@ -19,7 +21,7 @@ For the full list of supported tags, see:
 |Container image registry|amd64|arm64|
 |------------------------|-----|-----|
 |[Docker Hub]            | ✅ | ✅ |
-|[Quay.io]               | ✅ | N/A |
+|[Quay.io]               | ✅ | ✅ |
 
 ## How to use this image
 
@@ -139,6 +141,7 @@ Based on the [Docker "Official Image"] for [python] using the following
 - [3.12/slim-bullseye]
 
 <!-- External links -->
+[3.12, latest]: https://github.com/coatl-dev/docker-six/blob/coatl/Dockerfile
 [Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
 [GitHub Workflows]: https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
 [Docker Hub]: https://hub.docker.com/r/coatldev/six
