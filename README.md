@@ -141,7 +141,7 @@ Based on the [Docker "Official Image"] for [python] using the following
 - [3.12/slim-bullseye]
 
 <!-- External links -->
-[3.12, latest]: https://github.com/coatl-dev/docker-six/blob/coatl/Dockerfile
+[`3.12`, `latest`]: https://github.com/coatl-dev/docker-six/blob/coatl/Dockerfile
 [Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
 [GitHub Workflows]: https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
 [Docker Hub]: https://hub.docker.com/r/coatldev/six
