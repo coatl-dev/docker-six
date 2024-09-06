@@ -2,9 +2,9 @@ name: auto-update
 
 on:
   schedule:
-    - cron: '0 20 * * 0'        # Weekly
-    - cron: '0 18 14,28 * *'    # Twice a month
-    - cron: '0 18 10 2-12/2 *'  # Every two months
+    - cron: '30 18 * * 0,4'     # Python packages
+    - cron: '0 18 14,28 * *'    # Git
+    - cron: '0 18 10 2-12/2 *'  # Python 3.12 release schedule; see: https://peps.python.org/pep-0693/#bugfix-releases
   workflow_dispatch:
 
 jobs:
