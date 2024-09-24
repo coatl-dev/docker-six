@@ -70,7 +70,7 @@ jobs:
         run: |
           git checkout -B coatl-dev-autoupdate
           git add -u
-          git commit -m 'chore(python3): update requirements'
+          git commit -m 'feat: update toolset'
           git push --force --set-upstream origin coatl-dev-autoupdate
 
       - name: Create Pull Request
