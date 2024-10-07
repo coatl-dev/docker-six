@@ -2,9 +2,8 @@ name: auto-update
 
 on:
   schedule:
-    - cron: '30 18 * * 0,4'     # Python packages
     - cron: '0 18 14,28 * *'    # Git
-    - cron: '0 18 10 2-12/2 *'  # Python 3.12 release schedule; see: https://peps.python.org/pep-0693/#bugfix-releases
+    - cron: '0 18 10 2-12/2 *'  # Python release schedule
   workflow_dispatch:
 
 jobs:
@@ -26,36 +25,24 @@ jobs:
       - name: Fetch latest Python 3.12 release
         if: ${{ github.event.schedule == '0 18 10 2-12/2 *' || github.event_name == 'workflow_dispatch' }}
         run: |
-          python3_version=$(curl -s https://www.python.org/ftp/python/ | grep -oP '3\.12\.\d+/' | uniq | sort -V | tail -n 1 | tr -d '/')
+          python_version=$(curl -s https://www.python.org/ftp/python/ | grep -oP '3\.12\.\d+/' | uniq | sort -V | tail -n 1 | tr -d '/')
 
-          echo "python312: $python3_version"
+          echo "python3.12: $python_version"
 
-          sed -i "s/ENV PYTHON3_VERSION=.*/ENV PYTHON3_VERSION=$python3_version/" Dockerfile
+          sed -i "s/ENV PYTHON312_VERSION=.*/ENV PYTHON312_VERSION=$python_version/" Dockerfile
 
-      - name: Update requirements
-        uses: coatl-dev/actions/pip-compile@v3
-        with:
-          path: requirements
+      - name: Fetch latest Python 3.13 release
+        if: ${{ github.event.schedule == '0 18 10 2-12/2 *' || github.event_name == 'workflow_dispatch' }}
+        run: |
+          python_version=$(curl -s https://www.python.org/ftp/python/ | grep -oP '3\.13\.\d+/' | uniq | sort -V | tail -n 1 | tr -d '/')
+
+          echo "python3.13: $python_version"
+
+          sed -i "s/ENV PYTHON313_VERSION=.*/ENV PYTHON313_VERSION=$python_version/" Dockerfile
 
       - name: Detect changes
         id: git-diff
         uses: coatl-dev/actions/simple-git-diff@v3
-
-      - name: Extract package versions and update Dockerfile
-        if: ${{ steps.git-diff.outputs.diff == 'true' }}
-        run: |
-          pip_version=$(grep '^pip==' requirements/base.txt | cut -d'=' -f3)
-          setuptools_version=$(grep '^setuptools==' requirements/base.txt | cut -d'=' -f3)
-          wheel_version=$(grep '^wheel==' requirements/base.txt | cut -d'=' -f3)
-
-          echo "Extracted versions:"
-          echo "pip: $pip_version"
-          echo "setuptools: $setuptools_version"
-          echo "wheel: $wheel_version"
-
-          sed -i "s/ENV PYTHON3_PIP_VERSION=.*/ENV PYTHON3_PIP_VERSION=$pip_version/" Dockerfile
-          sed -i "s/ENV PYTHON3_SETUPTOOLS_VERSION=.*/ENV PYTHON3_SETUPTOOLS_VERSION=$setuptools_version/" Dockerfile
-          sed -i "s/ENV PYTHON3_WHEEL_VERSION=.*/ENV PYTHON3_WHEEL_VERSION=$wheel_version/" Dockerfile
 
       - name: Import GPG key
         if: ${{ steps.git-diff.outputs.diff == 'true' }}
