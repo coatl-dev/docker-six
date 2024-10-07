@@ -96,18 +96,18 @@ RUN set -eux; \
 
 # >============================================================================<
 
-FROM builder AS python2-builder
+FROM builder AS python27-builder
 
-ENV PYTHON2_VERSION=2.7.18
+ENV PYTHON217_VERSION=2.7.18
 
 WORKDIR /tmp
 
 RUN set -eux; \
     \
-    wget -q "https://www.python.org/ftp/python/${PYTHON2_VERSION%%[a-z]*}/Python-${PYTHON2_VERSION}.tgz"; \
-    tar -zxf "Python-${PYTHON2_VERSION}.tgz"
+    wget -q "https://www.python.org/ftp/python/${PYTHON217_VERSION%%[a-z]*}/Python-${PYTHON217_VERSION}.tgz"; \
+    tar -zxf "Python-${PYTHON217_VERSION}.tgz"
 
-WORKDIR "/tmp/Python-${PYTHON2_VERSION}"
+WORKDIR "/tmp/Python-${PYTHON217_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN set -eux; \
@@ -115,7 +115,7 @@ RUN set -eux; \
     gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
     ./configure \
         --build="$gnuArch" \
-        --prefix="${PYTHON_ROOT}/2/" \
+        --prefix="${PYTHON_ROOT}/2.7/" \
         --enable-optimizations \
         --enable-option-checking=fatal \
         --enable-shared \
@@ -162,7 +162,7 @@ RUN set -eux; \
     \
     make altinstall; \
     \
-    echo "${PYTHON_ROOT}/2/lib" | tee /etc/ld.so.conf.d/python2.conf; \
+    echo "${PYTHON_ROOT}/2.7/lib" | tee /etc/ld.so.conf.d/python2.7.conf; \
     ldconfig; \
     \
     find "${PYTHON_ROOT}" -depth \
@@ -173,10 +173,6 @@ RUN set -eux; \
         \) -exec rm -rf '{}' + \
     ;
 
-# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON2_PIP_VERSION=20.3.4
-ENV PYTHON2_SETUPTOOLS_VERSION=44.1.1
-ENV PYTHON2_WHEEL_VERSION=0.37.1
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/2.7/get-pip.py
 
@@ -184,36 +180,32 @@ RUN set -eux; \
     \
     wget -q "$PYTHON_GET_PIP_URL"; \
 	\
-	"${PYTHON_ROOT}/2/bin/python${PYTHON2_VERSION%.*}" get-pip.py \
-		--disable-pip-version-check \
-		--no-cache-dir \
-		"pip==$PYTHON2_PIP_VERSION" \
-		"setuptools==$PYTHON2_SETUPTOOLS_VERSION" \
-		"wheel==$PYTHON2_WHEEL_VERSION"
+	"${PYTHON_ROOT}/2.7/bin/python${PYTHON217_VERSION%.*}" get-pip.py \
+		--disable-pip-version-check
 
 # add some soft links for comfortable usage
-WORKDIR "${PYTHON_ROOT}/2/bin"
+WORKDIR "${PYTHON_ROOT}/2.7/bin"
 RUN set -eux; \
     \
-    ln -s idle idle2; \
-    ln -s "python${PYTHON2_VERSION%.*}" python2; \
-    ln -s "python${PYTHON2_VERSION%.*}" python; \
-    ln -s "python${PYTHON2_VERSION%.*}-config" python-config
+    ln -svT idle idle2; \
+    ln -svT "python${PYTHON217_VERSION%.*}" python2; \
+    ln -svT "python${PYTHON217_VERSION%.*}" python; \
+    ln -svT "python${PYTHON217_VERSION%.*}-config" python-config
 
 # >============================================================================<
 
-FROM builder AS python3-builder
+FROM builder AS python312-builder
 
-ENV PYTHON3_VERSION=3.12.7
+ENV PYTHON312_VERSION=3.12.7
 
 WORKDIR /tmp
 
 RUN set -eux; \
     \
-    wget -q "https://www.python.org/ftp/python/${PYTHON3_VERSION%%[a-z]*}/Python-${PYTHON3_VERSION}.tgz"; \
-    tar -zxf "Python-${PYTHON3_VERSION}.tgz"
+    wget -q "https://www.python.org/ftp/python/${PYTHON312_VERSION%%[a-z]*}/Python-${PYTHON312_VERSION}.tgz"; \
+    tar -zxf "Python-${PYTHON312_VERSION}.tgz"
 
-WORKDIR "/tmp/Python-${PYTHON3_VERSION}"
+WORKDIR "/tmp/Python-${PYTHON312_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN set -eux; \
@@ -221,14 +213,14 @@ RUN set -eux; \
     gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
     ./configure \
         --build="$gnuArch" \
-        --prefix="${PYTHON_ROOT}/3/" \
+        --prefix="${PYTHON_ROOT}/3.12/" \
         --enable-loadable-sqlite-extensions \
         --enable-optimizations \
         --enable-option-checking=fatal \
         --enable-shared \
         --with-lto \
         --with-system-expat \
-        --without-ensurepip \
+        --with-ensurepip \
     ; \
 	nproc="$(nproc)"; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
@@ -251,7 +243,7 @@ RUN set -eux; \
     ; \
     make altinstall; \
     \
-    echo "${PYTHON_ROOT}/3/lib" | tee /etc/ld.so.conf.d/python3.conf; \
+    echo "${PYTHON_ROOT}/3.12/lib" | tee /etc/ld.so.conf.d/python3.12.conf; \
     ldconfig; \
     \
     find "${PYTHON_ROOT}" -depth \
@@ -261,50 +253,108 @@ RUN set -eux; \
         \) -exec rm -rf '{}' + \
     ;
 
-# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON3_PIP_VERSION=24.2
-ENV PYTHON3_SETUPTOOLS_VERSION=75.1.0
-ENV PYTHON3_WHEEL_VERSION=0.44.0
-# https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
+# add some soft links for comfortable usage
+WORKDIR "${PYTHON_ROOT}/3.12/bin"
+RUN set -eux; \
+    \
+    ln -svT "2to3-${PYTHON312_VERSION%.*}" 2to3; \
+    ln -svT "idle${PYTHON312_VERSION%.*}" idle3; \
+    ln -svT "idle${PYTHON312_VERSION%.*}" idle; \
+    ln -svT "pip${PYTHON312_VERSION%.*}" pip3; \
+    ln -svT "pip${PYTHON312_VERSION%.*}" pip; \
+    ln -svT "pydoc${PYTHON312_VERSION%.*}" pydoc; \
+    ln -svT "python${PYTHON312_VERSION%.*}" python3; \
+    ln -svT "python${PYTHON312_VERSION%.*}" python; \
+    ln -svT "python${PYTHON312_VERSION%.*}-config" python-config
+
+# >============================================================================<
+
+FROM builder AS python313-builder
+
+ENV PYTHON313_VERSION=3.13.0
+
+WORKDIR /tmp
 
 RUN set -eux; \
     \
-    wget -q "$PYTHON_GET_PIP_URL"; \
+    wget -q "https://www.python.org/ftp/python/${PYTHON313_VERSION%%[a-z]*}/Python-${PYTHON313_VERSION}.tgz"; \
+    tar -zxf "Python-${PYTHON313_VERSION}.tgz"
+
+WORKDIR "/tmp/Python-${PYTHON313_VERSION}"
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN set -eux; \
     \
-	export PYTHONDONTWRITEBYTECODE=1; \
+    gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
+    ./configure \
+        --build="$gnuArch" \
+        --prefix="${PYTHON_ROOT}/3.13/" \
+        --enable-loadable-sqlite-extensions \
+        --enable-optimizations \
+        --enable-option-checking=fatal \
+        --enable-shared \
+        --with-lto \
+        --with-system-expat \
+        --with-ensurepip \
+    ; \
+    nproc="$(nproc)"; \
+    EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
+    LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
+    LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
+    make -s -j "$nproc" \
+        "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+        "LDFLAGS=${LDFLAGS:-}" \
+        "PROFILE_TASK=${PROFILE_TASK:-}" \
+    ; \
     \
-    "${PYTHON_ROOT}/3/bin/python${PYTHON3_VERSION%.*}" get-pip.py \
-        --disable-pip-version-check \
-        --no-cache-dir \
-        --no-compile \
-        "pip==$PYTHON3_PIP_VERSION" \
-		"setuptools==$PYTHON3_SETUPTOOLS_VERSION" \
-		"wheel==$PYTHON3_WHEEL_VERSION"
+    # https://github.com/docker-library/python/issues/784
+    # prevent accidental usage of a system installed libpython of the same version
+    rm python; \
+    make -s -j "$nproc" \
+        "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+        "LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
+        "PROFILE_TASK=${PROFILE_TASK:-}" \
+        python \
+    ; \
+    make altinstall; \
+    \
+    echo "${PYTHON_ROOT}/3.13/lib" | tee /etc/ld.so.conf.d/python3.13.conf; \
+    ldconfig; \
+    \
+    find "${PYTHON_ROOT}" -depth \
+        \( \
+            \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
+            -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
+        \) -exec rm -rf '{}' + \
+    ;
 
 # add some soft links for comfortable usage
-WORKDIR "${PYTHON_ROOT}/3/bin"
+WORKDIR "${PYTHON_ROOT}/3.13/bin"
 RUN set -eux; \
     \
-    ln -s "idle${PYTHON3_VERSION%.*}" idle3; \
-    ln -s "idle${PYTHON3_VERSION%.*}" idle; \
-    ln -s "pydoc${PYTHON3_VERSION%.*}" pydoc; \
-    ln -s "python${PYTHON3_VERSION%.*}" python3; \
-    ln -s "python${PYTHON3_VERSION%.*}" python; \
-    ln -s "python${PYTHON3_VERSION%.*}-config" python-config
+    ln -svT "idle${PYTHON313_VERSION%.*}" idle3; \
+    ln -svT "idle${PYTHON313_VERSION%.*}" idle; \
+    ln -svT "pip${PYTHON313_VERSION%.*}" pip3; \
+    ln -svT "pip${PYTHON313_VERSION%.*}" pip; \
+    ln -svT "pydoc${PYTHON313_VERSION%.*}" pydoc; \
+    ln -svT "python${PYTHON313_VERSION%.*}" python3; \
+    ln -svT "python${PYTHON313_VERSION%.*}" python; \
+    ln -svT "python${PYTHON313_VERSION%.*}-config" python-config
 
 # >============================================================================<
 
 FROM base AS final
 
 COPY --from=git-builder /usr/local /usr/local
-COPY --from=python2-builder ${PYTHON_ROOT}/2/ ${PYTHON_ROOT}/2/
-COPY --from=python2-builder /etc/ld.so.conf.d/python2.conf /etc/ld.so.conf.d/python2.conf
-COPY --from=python3-builder ${PYTHON_ROOT}/3/ ${PYTHON_ROOT}/3/
-COPY --from=python3-builder /etc/ld.so.conf.d/python3.conf /etc/ld.so.conf.d/python3.conf
+COPY --from=python27-builder ${PYTHON_ROOT}/2.7/ ${PYTHON_ROOT}/2.7/
+COPY --from=python27-builder /etc/ld.so.conf.d/python2.7.conf /etc/ld.so.conf.d/python2.7.conf
+COPY --from=python312-builder ${PYTHON_ROOT}/3.12/ ${PYTHON_ROOT}/3.12/
+COPY --from=python312-builder /etc/ld.so.conf.d/python3.12.conf /etc/ld.so.conf.d/python3.12.conf
+COPY --from=python313-builder ${PYTHON_ROOT}/3.13/ ${PYTHON_ROOT}/3.13/
+COPY --from=python313-builder /etc/ld.so.conf.d/python3.13.conf /etc/ld.so.conf.d/python3.13.conf
 
 # ensure local python is preferred over distribution python
-ENV PATH="${PYTHON_ROOT}/3/bin:${PYTHON_ROOT}/2/bin:$PATH"
+ENV PATH="${PYTHON_ROOT}/3.13/bin:${PYTHON_ROOT}/3.12/bin:${PYTHON_ROOT}/2.7/bin:$PATH"
 
 # link Python libraries
 RUN set -eux; \
