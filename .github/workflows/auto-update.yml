@@ -2,6 +2,7 @@ name: auto-update
 
 on:
   schedule:
+    - cron: '0 12 * * 0,4'
     - cron: '0 18 14,28 * *'    # Git
     - cron: '0 18 10 2-12/2 *'  # Python release schedule
   workflow_dispatch:
@@ -39,6 +40,30 @@ jobs:
           echo "python3.13: $python_version"
 
           sed -i "s/ENV PYTHON313_VERSION=.*/ENV PYTHON313_VERSION=$python_version/" Dockerfile
+
+      - name: Update requirements
+        uses: coatl-dev/actions/pip-compile@v3
+        with:
+          path: requirements/3.12
+          python-version: '3.12'
+
+      - name: Update requirements
+        uses: coatl-dev/actions/pip-compile@v3
+        with:
+          path: requirements/3.13
+          python-version: '3.13'
+
+      - name: Extract package versions and update Dockerfile
+        run: |
+          pip312=$(grep '^pip==' requirements/3.12/pip.txt | cut -d'=' -f3)
+          pip313=$(grep '^pip==' requirements/3.13/pip.txt | cut -d'=' -f3)
+
+          echo "Extracted versions:"
+          echo "pip3.12: $pip312"
+          echo "pip3.13: $pip313"
+
+          sed -i "s/ENV PYTHON312_PIP_VERSION=.*/ENV PYTHON312_PIP_VERSION=$pip312/" Dockerfile
+          sed -i "s/ENV PYTHON313_PIP_VERSION=.*/ENV PYTHON313_PIP_VERSION=$pip313/" Dockerfile
 
       - name: Detect changes
         id: git-diff

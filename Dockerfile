@@ -220,7 +220,7 @@ RUN set -eux; \
         --enable-shared \
         --with-lto \
         --with-system-expat \
-        --with-ensurepip \
+        --without-ensurepip \
     ; \
 	nproc="$(nproc)"; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
@@ -253,6 +253,23 @@ RUN set -eux; \
         \) -exec rm -rf '{}' + \
     ;
 
+# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
+ENV PYTHON312_PIP_VERSION=24.2
+# https://github.com/pypa/get-pip
+ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
+
+RUN set -eux; \
+    \
+    wget -q "$PYTHON_GET_PIP_URL"; \
+    \
+	export PYTHONDONTWRITEBYTECODE=1; \
+    \
+    "${PYTHON_ROOT}/3.12/bin/python${PYTHON312_VERSION%.*}" get-pip.py \
+        --disable-pip-version-check \
+        --no-cache-dir \
+        --no-compile \
+        "pip==$PYTHON312_PIP_VERSION"
+
 # add some soft links for comfortable usage
 WORKDIR "${PYTHON_ROOT}/3.12/bin"
 RUN set -eux; \
@@ -260,8 +277,6 @@ RUN set -eux; \
     ln -svT "2to3-${PYTHON312_VERSION%.*}" 2to3; \
     ln -svT "idle${PYTHON312_VERSION%.*}" idle3; \
     ln -svT "idle${PYTHON312_VERSION%.*}" idle; \
-    ln -svT "pip${PYTHON312_VERSION%.*}" pip3; \
-    ln -svT "pip${PYTHON312_VERSION%.*}" pip; \
     ln -svT "pydoc${PYTHON312_VERSION%.*}" pydoc; \
     ln -svT "python${PYTHON312_VERSION%.*}" python3; \
     ln -svT "python${PYTHON312_VERSION%.*}" python; \
@@ -295,7 +310,7 @@ RUN set -eux; \
         --enable-shared \
         --with-lto \
         --with-system-expat \
-        --with-ensurepip \
+        --without-ensurepip \
     ; \
     nproc="$(nproc)"; \
     EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
@@ -328,14 +343,29 @@ RUN set -eux; \
         \) -exec rm -rf '{}' + \
     ;
 
+# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
+ENV PYTHON313_PIP_VERSION=24.2
+# https://github.com/pypa/get-pip
+ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
+
+RUN set -eux; \
+    \
+    wget -q "$PYTHON_GET_PIP_URL"; \
+    \
+    export PYTHONDONTWRITEBYTECODE=1; \
+    \
+    "${PYTHON_ROOT}/3.13/bin/python${PYTHON313_VERSION%.*}" get-pip.py \
+        --disable-pip-version-check \
+        --no-cache-dir \
+        --no-compile \
+        "pip==$PYTHON313_PIP_VERSION"
+
 # add some soft links for comfortable usage
 WORKDIR "${PYTHON_ROOT}/3.13/bin"
 RUN set -eux; \
     \
     ln -svT "idle${PYTHON313_VERSION%.*}" idle3; \
     ln -svT "idle${PYTHON313_VERSION%.*}" idle; \
-    ln -svT "pip${PYTHON313_VERSION%.*}" pip3; \
-    ln -svT "pip${PYTHON313_VERSION%.*}" pip; \
     ln -svT "pydoc${PYTHON313_VERSION%.*}" pydoc; \
     ln -svT "python${PYTHON313_VERSION%.*}" python3; \
     ln -svT "python${PYTHON313_VERSION%.*}" python; \
