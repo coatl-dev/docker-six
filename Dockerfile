@@ -76,7 +76,7 @@ RUN set -eux; \
 
 FROM builder AS git-builder
 
-ENV GIT_VERSION=2.46.2
+ENV GIT_VERSION=2.47.0
 
 WORKDIR /tmp
 
