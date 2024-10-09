@@ -28,7 +28,7 @@ jobs:
         id: tags
         run: |
           # Extract the Python version from the Dockerfile
-          VERSION=$(grep 'ENV PYTHON313_VERSION' Dockerfile | cut -d '=' -f 2)
+          VERSION=$(grep 'ENV PYTHON_VERSION' Dockerfile | cut -d '=' -f 2)
           echo "VERSION=${VERSION}"
           # Trim the version to the first two segments (major.minor)
           MAJOR_MINOR=$(echo $VERSION | cut -d'.' -f1-2)

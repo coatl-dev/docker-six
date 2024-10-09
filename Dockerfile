@@ -284,18 +284,18 @@ RUN set -eux; \
 
 # >============================================================================<
 
-FROM builder AS python313-builder
+FROM builder AS python-builder
 
-ENV PYTHON313_VERSION=3.13.0
+ENV PYTHON_VERSION=3.13.0
 
 WORKDIR /tmp
 
 RUN set -eux; \
     \
-    wget -q "https://www.python.org/ftp/python/${PYTHON313_VERSION%%[a-z]*}/Python-${PYTHON313_VERSION}.tgz"; \
-    tar -zxf "Python-${PYTHON313_VERSION}.tgz"
+    wget -q "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tgz"; \
+    tar -zxf "Python-${PYTHON_VERSION}.tgz"
 
-WORKDIR "/tmp/Python-${PYTHON313_VERSION}"
+WORKDIR "/tmp/Python-${PYTHON_VERSION}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN set -eux; \
@@ -303,7 +303,7 @@ RUN set -eux; \
     gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
     ./configure \
         --build="$gnuArch" \
-        --prefix="${PYTHON_ROOT}/3.13/" \
+        --prefix="${PYTHON_ROOT}/" \
         --enable-loadable-sqlite-extensions \
         --enable-optimizations \
         --enable-option-checking=fatal \
@@ -333,7 +333,7 @@ RUN set -eux; \
     ; \
     make altinstall; \
     \
-    echo "${PYTHON_ROOT}/3.13/lib" | tee /etc/ld.so.conf.d/python3.13.conf; \
+    echo "${PYTHON_ROOT}/lib" | tee /etc/ld.so.conf.d/python.conf; \
     ldconfig; \
     \
     find "${PYTHON_ROOT}" -depth \
@@ -344,7 +344,7 @@ RUN set -eux; \
     ;
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON313_PIP_VERSION=24.2
+ENV PYTHON_PIP_VERSION=24.2
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
 
@@ -354,22 +354,22 @@ RUN set -eux; \
     \
     export PYTHONDONTWRITEBYTECODE=1; \
     \
-    "${PYTHON_ROOT}/3.13/bin/python${PYTHON313_VERSION%.*}" get-pip.py \
+    "${PYTHON_ROOT}/bin/python${PYTHON_VERSION%.*}" get-pip.py \
         --disable-pip-version-check \
         --no-cache-dir \
         --no-compile \
-        "pip==$PYTHON313_PIP_VERSION"
+        "pip==$PYTHON_PIP_VERSION"
 
 # add some soft links for comfortable usage
-WORKDIR "${PYTHON_ROOT}/3.13/bin"
+WORKDIR "${PYTHON_ROOT}/bin"
 RUN set -eux; \
     \
-    ln -svT "idle${PYTHON313_VERSION%.*}" idle3; \
-    ln -svT "idle${PYTHON313_VERSION%.*}" idle; \
-    ln -svT "pydoc${PYTHON313_VERSION%.*}" pydoc; \
-    ln -svT "python${PYTHON313_VERSION%.*}" python3; \
-    ln -svT "python${PYTHON313_VERSION%.*}" python; \
-    ln -svT "python${PYTHON313_VERSION%.*}-config" python-config
+    ln -svT "idle${PYTHON_VERSION%.*}" idle3; \
+    ln -svT "idle${PYTHON_VERSION%.*}" idle; \
+    ln -svT "pydoc${PYTHON_VERSION%.*}" pydoc; \
+    ln -svT "python${PYTHON_VERSION%.*}" python3; \
+    ln -svT "python${PYTHON_VERSION%.*}" python; \
+    ln -svT "python${PYTHON_VERSION%.*}-config" python-config
 
 # >============================================================================<
 
@@ -380,11 +380,11 @@ COPY --from=python27-builder ${PYTHON_ROOT}/2.7/ ${PYTHON_ROOT}/2.7/
 COPY --from=python27-builder /etc/ld.so.conf.d/python2.7.conf /etc/ld.so.conf.d/python2.7.conf
 COPY --from=python312-builder ${PYTHON_ROOT}/3.12/ ${PYTHON_ROOT}/3.12/
 COPY --from=python312-builder /etc/ld.so.conf.d/python3.12.conf /etc/ld.so.conf.d/python3.12.conf
-COPY --from=python313-builder ${PYTHON_ROOT}/3.13/ ${PYTHON_ROOT}/3.13/
-COPY --from=python313-builder /etc/ld.so.conf.d/python3.13.conf /etc/ld.so.conf.d/python3.13.conf
+COPY --from=python-builder ${PYTHON_ROOT}/ ${PYTHON_ROOT}/
+COPY --from=python-builder /etc/ld.so.conf.d/python.conf /etc/ld.so.conf.d/python.conf
 
 # ensure local python is preferred over distribution python
-ENV PATH="${PYTHON_ROOT}/3.13/bin:${PYTHON_ROOT}/3.12/bin:${PYTHON_ROOT}/2.7/bin:$PATH"
+ENV PATH="${PYTHON_ROOT}/bin:${PYTHON_ROOT}/3.12/bin:${PYTHON_ROOT}/2.7/bin:$PATH"
 
 # link Python libraries
 RUN set -eux; \
