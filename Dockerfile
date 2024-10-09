@@ -121,7 +121,7 @@ RUN set -eux; \
         --enable-shared \
         --enable-unicode=ucs4 \
     ; \
-    make -s -j "$(nproc)" \
+    make --jobs="$(nproc)" \
 # setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
         PROFILE_TASK='-m test.regrtest --pgo \
             test_array \
@@ -226,7 +226,7 @@ RUN set -eux; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
 	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
 	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
-	make -s -j "$nproc" \
+	make --jobs="$nproc" \
 		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
 		"LDFLAGS=${LDFLAGS:-}" \
 		"PROFILE_TASK=${PROFILE_TASK:-}" \
@@ -235,7 +235,7 @@ RUN set -eux; \
     # https://github.com/docker-library/python/issues/784
     # prevent accidental usage of a system installed libpython of the same version
     rm python; \
-    make -s -j "$nproc" \
+    make --jobs="$nproc" \
         "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
         "LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
         "PROFILE_TASK=${PROFILE_TASK:-}" \
@@ -316,7 +316,7 @@ RUN set -eux; \
     EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
     LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
     LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
-    make -s -j "$nproc" \
+    make --jobs="$nproc" \
         "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
         "LDFLAGS=${LDFLAGS:-}" \
         "PROFILE_TASK=${PROFILE_TASK:-}" \
@@ -325,7 +325,7 @@ RUN set -eux; \
     # https://github.com/docker-library/python/issues/784
     # prevent accidental usage of a system installed libpython of the same version
     rm python; \
-    make -s -j "$nproc" \
+    make --jobs="$nproc" \
         "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
         "LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
         "PROFILE_TASK=${PROFILE_TASK:-}" \
