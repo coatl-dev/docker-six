@@ -4,12 +4,12 @@
 [![Docker Repository on Docker Hub](https://img.shields.io/badge/hub.docker.com-white?logo=docker "Docker Repository on Docker Hub")](https://hub.docker.com/r/coatldev/six)
 [![Docker Repository on Quay](https://img.shields.io/badge/quay.io-red?logo=red-hat "Docker Repository on Quay")](https://quay.io/repository/coatldev/six)
 
-Docker image based on Ubuntu 24.04 (Noble Numbat) with Python 3.13, 3.12 and
-2.7.18 pre-installed.
+Docker image based on Ubuntu 24.04 (Noble Numbat) with Python 3.13.1, 3.12.8
+and 2.7.18 pre-installed.
 
 ## Supported tags
 
-- [`3.13`, `3.13.0`, `latest`]
+- [`3.13`, `3.13.1`, `latest`]
 
 For the full list of supported tags, see:
 
@@ -34,8 +34,6 @@ and [GitHub Workflows].
 
 ### Azure Pipelines
 
-Using [Docker Hub]:
-
 ```yml
 jobs:
   - job: tox
@@ -43,7 +41,7 @@ jobs:
     pool:
       vmImage: ubuntu-latest
 
-    container: coatldev/six:latest
+    container: coatldev/six:latest # or quay.io/coatldev/six:latest
 
     steps:
       - script: |
@@ -59,34 +57,7 @@ jobs:
         displayName: Run tests
 ```
 
-Using [Quay.io]:
-
-```yml
-jobs:
-  - job: tox
-
-    pool:
-      vmImage: ubuntu-latest
-
-    container: quay.io/coatldev/six:latest
-
-    steps:
-      - script: |
-          sudo chown -R $(whoami):$(id -ng) "${PYTHON_ROOT}"
-        displayName: Change owner
-
-      - script: |
-          python -m pip install tox
-        displayName: Install dependencies
-
-      - script: |
-          tox
-        displayName: Run tests
-```
-
-### GitHub Workflows
-
-Using [Docker Hub]:
+### GitHub Actions workflow
 
 ```yml
 jobs:
@@ -94,30 +65,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container: coatldev/six:latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          python -m pip install tox
-
-      - name: Run tests
-        run: |
-          tox
-```
-
-Using [Quay.io]:
-
-```yml
-jobs:
-  tox:
-
-    runs-on: ubuntu-latest
-
-    container: quay.io/coatldev/six:latest
+    container: coatldev/six:latest # or quay.io/coatldev/six:latest
 
     steps:
       - name: Checkout repo
@@ -142,7 +90,7 @@ Based on the [Docker "Official Image"] for [python] using the following
 - [3.13/slim-bullseye]
 
 <!-- External links -->
-[`3.13`, `3.13.0`, `latest`]: https://github.com/coatl-dev/docker-six/blob/coatl/Dockerfile
+[`3.13`, `3.13.1`, `latest`]: https://github.com/coatl-dev/docker-six/blob/coatl/Dockerfile
 [Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
 [GitHub Workflows]: https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
 [Docker Hub]: https://hub.docker.com/r/coatldev/six
