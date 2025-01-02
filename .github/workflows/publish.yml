@@ -39,7 +39,7 @@ jobs:
 
   docker:
     needs: tagger
-    uses: coatl-dev/workflows/.github/workflows/docker-build-push-multi-platform.yml@v4
+    uses: ./.github/workflows/docker-build-push-multi-platform.yml
     with:
       registry-image: coatldev/six
       metadata-tags: |
@@ -56,7 +56,7 @@ jobs:
     needs:
       - tagger
       - docker
-    uses: coatl-dev/workflows/.github/workflows/docker-build-push-multi-platform.yml@v4
+    uses: ./.github/workflows/docker-build-push-multi-platform.yml
     with:
       registry-image: quay.io/coatldev/six
       metadata-tags: |
