@@ -41,9 +41,9 @@ jobs:
         id: set-build-cache
         run: |
           if [[ "${{ github.event.schedule }}" == '0 16 1 * *' || "${{ github.event_name }}" == 'workflow_dispatch' ]]; then
-            echo "build-cache=false" >> $GITHUB_ENV
+            echo "build-cache=false" >> $GITHUB_OUTPUT
           else
-            echo "build-cache=true" >> $GITHUB_ENV
+            echo "build-cache=true" >> $GITHUB_OUTPUT
           fi
 
   build:
