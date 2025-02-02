@@ -43,7 +43,7 @@ jobs:
       dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
       quay-repo: quay.io/coatldev/six
       quay-username: ${{ vars.QUAY_USERNAME }}
-      build-cache: ${{ github.event.schedule == '0 16 1 * *' }}
+      build-cache: ${{ github.event.schedule != '0 16 1 * *' }}
       metadata-tags: |
         type=raw,value=${{ needs.tagger.outputs.version }}
         type=raw,value=${{ needs.tagger.outputs.major-minor }}
