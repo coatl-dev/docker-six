@@ -10,15 +10,13 @@ on:
   schedule:
     - cron: '0 20 * * 2,6'
     - cron: '0 16 1 * *'
-  workflow_dispatch:
 
 jobs:
-  pre-build:
+  tagger:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.tags.outputs.version }}
       major-minor: ${{ steps.tags.outputs.major-minor }}
-      build-cache: ${{ steps.set-build-cache.outputs.build-cache }}
 
     steps:
       - name: Checkout
@@ -37,27 +35,18 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "major-minor=${MAJOR_MINOR}" >> $GITHUB_OUTPUT
 
-      - name: Set build cache flag
-        id: set-build-cache
-        run: |
-          if [[ '${{ github.event.schedule }}' == '0 16 1 * *' || '${{ github.event_name }}' == 'workflow_dispatch' ]]; then
-            echo "build-cache=false" >> $GITHUB_OUTPUT
-          else
-            echo "build-cache=true" >> $GITHUB_OUTPUT
-          fi
-
   build:
-    needs: pre-build
+    needs: tagger
     uses: coatl-dev/workflows/.github/workflows/docker-build-push-multi-registry.yml@v4
     with:
       dockerhub-repo: coatldev/six
       dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
       quay-repo: quay.io/coatldev/six
       quay-username: ${{ vars.QUAY_USERNAME }}
-      build-cache: ${{ fromJson(needs.pre-build.outputs.build-cache) }}
+      build-cache: ${{ github.event.schedule == '0 16 1 * *' }}
       metadata-tags: |
-        type=raw,value=${{ needs.pre-build.outputs.version }}
-        type=raw,value=${{ needs.pre-build.outputs.major-minor }}
+        type=raw,value=${{ needs.tagger.outputs.version }}
+        type=raw,value=${{ needs.tagger.outputs.major-minor }}
         type=raw,value=latest,enable={{is_default_branch}}
     secrets:
       dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
