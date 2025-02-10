@@ -254,7 +254,7 @@ RUN set -eux; \
     ;
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON312_PIP_VERSION=25.0
+ENV PYTHON312_PIP_VERSION=25.0.1
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
 
@@ -344,7 +344,7 @@ RUN set -eux; \
     ;
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION=25.0
+ENV PYTHON_PIP_VERSION=25.0.1
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
 
