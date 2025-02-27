@@ -2,8 +2,7 @@ name: auto-update
 
 on:
   schedule:
-    - cron: '0 12 * * 0,4'
-    - cron: '0 18 7,21 * *'    # Git
+    - cron: '0 18 14,28 * *'    # Git and Python packages
     - cron: '0 18 10 2-12/2 *'  # Python release schedule
   workflow_dispatch:
 
@@ -15,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Fetch latest Git release
-        if: ${{ github.event.schedule == '0 18 7,21 * *' || github.event_name == 'workflow_dispatch' }}
+        if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
         run: |
           git_version=$(git ls-remote --tags https://github.com/git/git | grep -o 'refs/tags/v[0-9]*\.[0-9]*\.[0-9]*$' | sort -V | tail -n1 | sed 's/refs\/tags\///' | sed 's/^v//')
 
@@ -44,18 +43,21 @@ jobs:
           sed -E -i "s/3\.13\.[0-9]+/$python_version/g" README.md
 
       - name: Update requirements
+        if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
         uses: coatl-dev/actions/pip-compile@v3
         with:
           path: requirements/3.12/pip.txt
           python-version: '3.12'
 
       - name: Update requirements
+        if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
         uses: coatl-dev/actions/pip-compile@v3
         with:
           path: requirements/pip.txt
           python-version: '3.13'
 
       - name: Extract package versions and update Dockerfile
+        if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
         run: |
           pip312=$(grep '^pip==' requirements/3.12/pip.txt | cut -d '=' -f 3)
           pip=$(grep '^pip==' requirements/pip.txt | cut -d '=' -f 3)
