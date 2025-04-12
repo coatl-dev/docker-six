@@ -5,11 +5,13 @@ on:
     branches:
       - 'coatl'
     paths:
+      - '.github/workflows/docker-build-push-multi-registry.yml'
+      - '.github/workflows/publish.yml'
       - 'Dockerfile'
 
 jobs:
   tagger:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith
     outputs:
       version: ${{ steps.tags.outputs.version }}
       major-minor: ${{ steps.tags.outputs.major-minor }}
@@ -33,7 +35,7 @@ jobs:
 
   build:
     needs: tagger
-    uses: coatl-dev/workflows/.github/workflows/docker-build-push-multi-registry.yml@v4
+    uses: ./.github/workflows/docker-build-push-multi-registry.yml
     with:
       dockerhub-repo: coatldev/six
       dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
