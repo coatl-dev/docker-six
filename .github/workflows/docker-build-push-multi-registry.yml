@@ -1,0 +1,186 @@
+on:
+  workflow_call:
+    inputs:
+      dockerhub-repo:
+        description: >-
+          Docker Hub repository to push the image to.
+        required: true
+        type: string
+      dockerhub-username:
+        description: >-
+          Username for authenticating to Docker Hub.
+        required: true
+        type: string
+      quay-repo:
+        description: >-
+          Quay repository to push the image to.
+        required: true
+        type: string
+      quay-username:
+        description: >-
+          Username for authenticating to Quay.
+        required: true
+        type: string
+      build-context:
+        description: >-
+          Build's context is the set of files located in the specified PATH or URL.
+        type: string
+        required: false
+      build-file:
+        description: >-
+          Path to the Dockerfile.
+        type: string
+        required: false
+      build-cache-key:
+        description: >-
+          An explicit key for a cache entry.
+        required: false
+        type: string
+        default: coatl
+      build-digest-key:
+        description: >-
+          Name of the build digest.
+        required: false
+        type: string
+        default: coatl
+      metadata-tags:
+        description: >-
+          List of tags as key-value pair attributes.
+        required: false
+        type: string
+      latest-tag-flavor:
+        description: >-
+          Set the latest tag flavor.
+        required: false
+        type: string
+        default: auto
+    secrets:
+      dockerhub-password:
+        description: >-
+          Password or personal access token for authenticating against Docker Hub.
+        required: true
+      quay-password:
+        description: >-
+          Password or personal access token for authenticating against Quay.
+        required: true
+
+jobs:
+  build:
+    runs-on: ${{ matrix.builder.runner-image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        builder:
+          - runner-image: blacksmith
+            platform: linux/amd64
+          - runner-image: blacksmith-arm
+            platform: linux/arm64
+    steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.builder.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ inputs.dockerhub-repo }}
+            ${{ inputs.quay-repo }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ inputs.dockerhub-username }}
+          password: ${{ secrets.dockerhub-password }}
+
+      - name: Login to Quay
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ inputs.quay-username }}
+          password: ${{ secrets.quay-password }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push by digest
+        id: build
+        uses: useblacksmith/build-push-action@v1
+        with:
+          cache-from: type=gha,scope=${{ inputs.build-cache-key }}-${{ env.PLATFORM_PAIR }}
+          cache-to: type=gha,scope=${{ inputs.build-cache-key }}-${{ env.PLATFORM_PAIR }},mode=max
+          context: ${{ inputs.build-context }}
+          file: ${{ inputs.build-file }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,"name=${{ inputs.dockerhub-repo }},${{ inputs.quay-repo }}",push-by-digest=true,name-canonical=true,push=true
+          platforms: ${{ matrix.builder.platform }}
+          provenance: false
+
+      - name: Export digest
+        run: |
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ inputs.build-digest-key }}-${{ env.PLATFORM_PAIR }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    runs-on: blacksmith
+    needs:
+      - build
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-${{ inputs.build-digest-key }}-*
+          merge-multiple: true
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ inputs.dockerhub-username }}
+          password: ${{ secrets.dockerhub-password }}
+
+      - name: Login to Quay
+        uses: docker/login-action@v3
+        with:
+            registry: quay.io
+            username: ${{ inputs.quay-username }}
+            password: ${{ secrets.quay-password }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ inputs.dockerhub-repo }}
+            ${{ inputs.quay-repo }}
+          tags: |
+            ${{ inputs.metadata-tags }}
+          flavor: |
+            latest=${{ inputs.latest-tag-flavor }}
+
+      - name: Create manifest list and push
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ inputs.dockerhub-repo }}@sha256:%s ' *)
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ inputs.quay-repo }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ inputs.dockerhub-repo }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ inputs.quay-repo }}:${{ steps.meta.outputs.version }}

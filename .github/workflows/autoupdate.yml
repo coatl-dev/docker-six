@@ -1,4 +1,4 @@
-name: auto-update
+name: autoupdate
 
 on:
   schedule:
@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  auto-update:
-    runs-on: ubuntu-latest
+  autoupdate:
+    runs-on: blacksmith
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
