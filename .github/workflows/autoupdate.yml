@@ -44,14 +44,14 @@ jobs:
 
       - name: Update requirements
         if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
-        uses: coatl-dev/actions/pip-compile@v3
+        uses: coatl-dev/actions/pip-compile@v4
         with:
           path: requirements/3.12/pip.txt
           python-version: '3.12'
 
       - name: Update requirements
         if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
-        uses: coatl-dev/actions/pip-compile@v3
+        uses: coatl-dev/actions/pip-compile@v4
         with:
           path: requirements/pip.txt
           python-version: '3.13'
@@ -71,12 +71,12 @@ jobs:
 
       - name: Detect changes
         id: git-diff
-        uses: coatl-dev/actions/simple-git-diff@v3
+        uses: coatl-dev/actions/simple-git-diff@v4
 
       - name: Import GPG key
         if: ${{ steps.git-diff.outputs.diff == 'true' }}
         id: gpg-import
-        uses: coatl-dev/actions/gpg-import@v3
+        uses: coatl-dev/actions/gpg-import@v4
         with:
           passphrase: ${{ secrets.COATL_BOT_GPG_PASSPHRASE }}
           private-key: ${{ secrets.COATL_BOT_GPG_PRIVATE_KEY }}
@@ -91,6 +91,6 @@ jobs:
 
       - name: Create Pull Request
         if: ${{ steps.git-diff.outputs.diff == 'true' }}
-        uses: coatl-dev/actions/pr-create@v3
+        uses: coatl-dev/actions/pr-create@v4
         with:
           gh-token: ${{ secrets.COATL_BOT_GH_TOKEN }}
