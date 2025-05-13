@@ -3,11 +3,11 @@ name: publish
 on:
   push:
     branches:
-      - 'coatl'
+      - coatl
     paths:
-      - '.github/workflows/docker-build-push-multi-registry.yml'
-      - '.github/workflows/publish.yml'
-      - 'Dockerfile'
+      - .github/workflows/docker-build-push-multi-registry.yml
+      - .github/workflows/publish.yml
+      - Dockerfile
 
 jobs:
   tagger:

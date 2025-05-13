@@ -44,14 +44,14 @@ jobs:
 
       - name: Update requirements
         if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
-        uses: coatl-dev/actions/pip-compile@v4
+        uses: coatl-dev/actions/pip-compile-upgrade@v4
         with:
           path: requirements/3.12/pip.txt
           python-version: '3.12'
 
       - name: Update requirements
         if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
-        uses: coatl-dev/actions/pip-compile@v4
+        uses: coatl-dev/actions/pip-compile-upgrade@v4
         with:
           path: requirements/pip.txt
           python-version: '3.13'
