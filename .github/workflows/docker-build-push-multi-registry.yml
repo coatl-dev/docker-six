@@ -71,9 +71,9 @@ jobs:
       fail-fast: false
       matrix:
         builder:
-          - runner-image: blacksmith
+          - runner-image: blacksmith-4vcpu-ubuntu-2404
             platform: linux/amd64
-          - runner-image: blacksmith-arm
+          - runner-image: blacksmith-4vcpu-ubuntu-2404-arm
             platform: linux/arm64
     steps:
       - name: Prepare
@@ -135,7 +135,7 @@ jobs:
           retention-days: 1
 
   merge:
-    runs-on: blacksmith
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     needs:
       - build
     steps:

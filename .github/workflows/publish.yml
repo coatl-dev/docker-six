@@ -11,7 +11,7 @@ on:
 
 jobs:
   tagger:
-    runs-on: blacksmith
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     outputs:
       version: ${{ steps.tags.outputs.version }}
       major-minor: ${{ steps.tags.outputs.major-minor }}
