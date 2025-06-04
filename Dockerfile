@@ -198,7 +198,7 @@ RUN set -eux; \
 
 FROM builder AS python312-builder
 
-ENV PYTHON312_VERSION=3.12.10
+ENV PYTHON312_VERSION=3.12.11
 
 WORKDIR /tmp
 
@@ -288,7 +288,7 @@ RUN set -eux; \
 
 FROM builder AS python-builder
 
-ENV PYTHON_VERSION=3.13.3
+ENV PYTHON_VERSION=3.13.4
 
 WORKDIR /tmp
 
