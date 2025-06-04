@@ -32,6 +32,7 @@ RUN set -eux; \
         curl \
         git-man \
         iproute2 \
+        less \
         libcurl3t64-gnutls \
         liberror-perl \
         libexpat1 \
