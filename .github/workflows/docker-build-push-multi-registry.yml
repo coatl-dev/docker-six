@@ -109,10 +109,8 @@ jobs:
 
       - name: Build and push by digest
         id: build
-        uses: docker/build-push-action@v6
+        uses: useblacksmith/build-push-action@v1
         with:
-          cache-from: type=gha,scope=${{ inputs.build-cache-key }}-${{ env.PLATFORM_PAIR }}
-          cache-to: type=gha,scope=${{ inputs.build-cache-key }}-${{ env.PLATFORM_PAIR }},mode=max
           context: ${{ inputs.build-context }}
           file: ${{ inputs.build-file }}
           labels: ${{ steps.meta.outputs.labels }}
