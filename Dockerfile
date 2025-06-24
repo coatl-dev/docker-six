@@ -31,7 +31,6 @@ RUN set -eux; \
         ca-certificates \
         curl \
         git-man \
-        iproute2 \
         less \
         libcurl3t64-gnutls \
         liberror-perl \
