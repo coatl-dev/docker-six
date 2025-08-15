@@ -4,12 +4,12 @@
 [![Docker Repository on Docker Hub](https://img.shields.io/badge/hub.docker.com-white?logo=docker "Docker Repository on Docker Hub")](https://hub.docker.com/r/coatldev/six)
 [![Docker Repository on Quay](https://img.shields.io/badge/quay.io-red?logo=red-hat "Docker Repository on Quay")](https://quay.io/repository/coatldev/six)
 
-Docker image based on Ubuntu 24.04 (Noble Numbat) with Python 3.13.6, 3.12.11
+Docker image based on Ubuntu 24.04 (Noble Numbat) with Python 3.13.7, 3.12.11
 and 2.7.18 pre-installed.
 
 ## Supported tags
 
-- [`3.13`, `3.13.6`, `latest`]
+- [`3.13`, `3.13.7`, `latest`]
 
 For the full list of supported tags, see:
 
@@ -90,7 +90,7 @@ Based on the [Docker "Official Image"] for [python] using the following
 - [3.13/slim-bullseye]
 
 <!-- External links -->
-[`3.13`, `3.13.6`, `latest`]: https://github.com/coatl-dev/docker-six/blob/coatl/Dockerfile
+[`3.13`, `3.13.7`, `latest`]: https://github.com/coatl-dev/docker-six/blob/coatl/Dockerfile
 [Azure Pipelines]: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-container?view=azure-pipelines
 [GitHub Workflows]: https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
 [Docker Hub]: https://hub.docker.com/r/coatldev/six
