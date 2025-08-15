@@ -287,7 +287,7 @@ RUN set -eux; \
 
 FROM builder AS python-builder
 
-ENV PYTHON_VERSION=3.13.6
+ENV PYTHON_VERSION=3.13.7
 
 WORKDIR /tmp
 
