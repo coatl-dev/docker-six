@@ -13,8 +13,9 @@ jobs:
   tagger:
     runs-on: blacksmith-2vcpu-ubuntu-2404
     outputs:
-      version: ${{ steps.tags.outputs.version }}
-      major-minor: ${{ steps.tags.outputs.major-minor }}
+      python-version: ${{ steps.tags.outputs.version }}
+      python-version-major-minor: ${{ steps.tags.outputs.major-minor }}
+      git-version: ${{ steps.tags.outputs.git-version }}
 
     steps:
       - name: Checkout
@@ -24,14 +25,18 @@ jobs:
         id: tags
         run: |
           # Extract the Python version from the Dockerfile
-          VERSION=$(grep 'ENV PYTHON_VERSION' Dockerfile | cut -d '=' -f 2)
-          echo "VERSION=${VERSION}"
+          PYTHON_VERSION=$(grep 'ENV PYTHON_VERSION' Dockerfile | cut -d '=' -f 2)
+          echo "PYTHON_VERSION=${PYTHON_VERSION}"
           # Trim the version to the first two segments (major.minor)
-          MAJOR_MINOR=$(echo $VERSION | cut -d'.' -f1-2)
+          PYTHON_VERSION_MAJOR_MINOR=$(echo $PYTHON_VERSION | cut -d'.' -f1-2)
           echo "MAJOR_MINOR=${MAJOR_MINOR}"
           # Export the extracted version to GITHUB_OUTPUT
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "major-minor=${MAJOR_MINOR}" >> $GITHUB_OUTPUT
+          echo "python-version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "python-version-major-minor=${PYTHON_VERSION_MAJOR_MINOR}" >> $GITHUB_OUTPUT
+          # Extract the Git version from the Dockerfile
+          GIT_VERSION=$(grep 'ENV GIT_VERSION' Dockerfile | cut -d '=' -f 2)
+          echo "GIT_VERSION=${GIT_VERSION}"
+          echo "git-version=${GIT_VERSION}" >> $GITHUB_OUTPUT
 
   build:
     needs: tagger
@@ -42,8 +47,9 @@ jobs:
       quay-repo: quay.io/coatldev/six
       quay-username: ${{ vars.QUAY_USERNAME }}
       metadata-tags: |
-        type=raw,value=${{ needs.tagger.outputs.version }}
-        type=raw,value=${{ needs.tagger.outputs.major-minor }}
+        type=raw,value=${{ needs.tagger.outputs.python-version }}
+        type=raw,value=${{ needs.tagger.outputs.python-version-major-minor }}
+        type=raw,value=${{ needs.tagger.outputs.python-version }}-${{ needs.tagger.outputs.git-version }}
         type=raw,value=latest,enable={{is_default_branch}}
     secrets:
       dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}

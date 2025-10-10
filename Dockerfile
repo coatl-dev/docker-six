@@ -51,23 +51,20 @@ RUN set -eux; \
     \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
-        libbluetooth-dev \
+        autoconf \
+        gettext \
         libbz2-dev \
-        libc6-dev \
         libcurl4-gnutls-dev \
-        libdb-dev \
         libexpat1-dev \
         libffi-dev \
-        libgdbm-dev \
         liblzma-dev \
+        libncurses5-dev \
         libncursesw5-dev \
         libreadline-dev \
         libsqlite3-dev \
         libssl-dev \
-        libvips-dev \
-        packaging-dev \
+        llvm \
         tk-dev \
-        uuid-dev \
         xz-utils \
         zlib1g-dev \
     ; \
@@ -117,10 +114,12 @@ RUN set -eux; \
     ./configure \
         --build="$gnuArch" \
         --prefix="${PYTHON_ROOT}/2.7/" \
-        --enable-optimizations \
-        --enable-option-checking=fatal \
+        --enable-loadable-sqlite-extensions \
         --enable-shared \
-        --enable-unicode=ucs4 \
+        --enable-optimizations \
+        --with-computed-gotos \
+        --with-lto \
+        --with-system-ffi \
     ; \
     make --jobs="$(nproc)" \
 # setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
@@ -197,7 +196,7 @@ RUN set -eux; \
 
 FROM builder AS python312-builder
 
-ENV PYTHON312_VERSION=3.12.11
+ENV PYTHON312_VERSION=3.12.12
 
 WORKDIR /tmp
 
@@ -217,29 +216,22 @@ RUN set -eux; \
         --prefix="${PYTHON_ROOT}/3.12/" \
         --enable-loadable-sqlite-extensions \
         --enable-optimizations \
-        --enable-option-checking=fatal \
         --enable-shared \
         --with-lto \
-        --with-system-expat \
         --without-ensurepip \
     ; \
 	nproc="$(nproc)"; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
 	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
 	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
+    EXTRA_CFLAGS="${EXTRA_CFLAGS:-} -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"; \
 	make --jobs="$nproc" \
-		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
-		"LDFLAGS=${LDFLAGS:-}" \
-		"PROFILE_TASK=${PROFILE_TASK:-}" \
-	; \
+    ; \
     \
     # https://github.com/docker-library/python/issues/784
     # prevent accidental usage of a system installed libpython of the same version
     rm python; \
     make --jobs="$nproc" \
-        "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
-        "LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
-        "PROFILE_TASK=${PROFILE_TASK:-}" \
         python \
     ; \
     make altinstall; \
@@ -285,95 +277,6 @@ RUN set -eux; \
 
 # >============================================================================<
 
-FROM builder AS python-builder
-
-ENV PYTHON_VERSION=3.13.7
-
-WORKDIR /tmp
-
-RUN set -eux; \
-    \
-    wget -q "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tgz"; \
-    tar -zxf "Python-${PYTHON_VERSION}.tgz"
-
-WORKDIR "/tmp/Python-${PYTHON_VERSION}"
-
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN set -eux; \
-    \
-    gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
-    ./configure \
-        --build="$gnuArch" \
-        --prefix="${PYTHON_ROOT}/" \
-        --enable-loadable-sqlite-extensions \
-        --enable-optimizations \
-        --enable-option-checking=fatal \
-        --enable-shared \
-        --with-lto \
-        --with-system-expat \
-        --without-ensurepip \
-    ; \
-    nproc="$(nproc)"; \
-    EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
-    LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
-    LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
-    make --jobs="$nproc" \
-        "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
-        "LDFLAGS=${LDFLAGS:-}" \
-        "PROFILE_TASK=${PROFILE_TASK:-}" \
-    ; \
-    \
-    # https://github.com/docker-library/python/issues/784
-    # prevent accidental usage of a system installed libpython of the same version
-    rm python; \
-    make --jobs="$nproc" \
-        "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
-        "LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
-        "PROFILE_TASK=${PROFILE_TASK:-}" \
-        python \
-    ; \
-    make altinstall; \
-    \
-    echo "${PYTHON_ROOT}/lib" | tee /etc/ld.so.conf.d/python.conf; \
-    ldconfig; \
-    \
-    find "${PYTHON_ROOT}" -depth \
-        \( \
-            \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
-            -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
-        \) -exec rm -rf '{}' + \
-    ;
-
-# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION=25.2
-# https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
-
-RUN set -eux; \
-    \
-    wget -q "$PYTHON_GET_PIP_URL"; \
-    \
-    export PYTHONDONTWRITEBYTECODE=1; \
-    \
-    "${PYTHON_ROOT}/bin/python${PYTHON_VERSION%.*}" get-pip.py \
-        --disable-pip-version-check \
-        --no-cache-dir \
-        --no-compile \
-        "pip==$PYTHON_PIP_VERSION"
-
-# add some soft links for comfortable usage
-WORKDIR "${PYTHON_ROOT}/bin"
-RUN set -eux; \
-    \
-    ln -svT "idle${PYTHON_VERSION%.*}" idle3; \
-    ln -svT "idle${PYTHON_VERSION%.*}" idle; \
-    ln -svT "pydoc${PYTHON_VERSION%.*}" pydoc; \
-    ln -svT "python${PYTHON_VERSION%.*}" python3; \
-    ln -svT "python${PYTHON_VERSION%.*}" python; \
-    ln -svT "python${PYTHON_VERSION%.*}-config" python-config
-
-# >============================================================================<
-
 FROM base AS final
 
 COPY --from=git-builder /usr/local /usr/local
@@ -381,11 +284,18 @@ COPY --from=python27-builder ${PYTHON_ROOT}/2.7/ ${PYTHON_ROOT}/2.7/
 COPY --from=python27-builder /etc/ld.so.conf.d/python2.7.conf /etc/ld.so.conf.d/python2.7.conf
 COPY --from=python312-builder ${PYTHON_ROOT}/3.12/ ${PYTHON_ROOT}/3.12/
 COPY --from=python312-builder /etc/ld.so.conf.d/python3.12.conf /etc/ld.so.conf.d/python3.12.conf
-COPY --from=python-builder ${PYTHON_ROOT}/ ${PYTHON_ROOT}/
-COPY --from=python-builder /etc/ld.so.conf.d/python.conf /etc/ld.so.conf.d/python.conf
 
 # ensure local python is preferred over distribution python
-ENV PATH="${PYTHON_ROOT}/bin:${PYTHON_ROOT}/3.12/bin:${PYTHON_ROOT}/2.7/bin:$PATH"
+ENV PATH="${PYTHON_ROOT}/3.12/bin:${PYTHON_ROOT}/2.7/bin:$PATH"
+
+# Install uv
+ENV UV_VERSION=0.9.1
+ENV UV_DISABLE_UPDATE=1
+ADD https://astral.sh/uv/${UV_VERSION}/install.sh /tmp/install-uv.sh
+RUN set -eux; \
+    \
+    bash /tmp/install-uv.sh; \
+    rm -f /tmp/install-uv.sh
 
 # link Python libraries
 RUN set -eux; \
