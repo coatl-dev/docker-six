@@ -13,8 +13,8 @@ jobs:
   tagger:
     runs-on: blacksmith-2vcpu-ubuntu-2404
     outputs:
-      python-version: ${{ steps.tags.outputs.version }}
-      python-version-major-minor: ${{ steps.tags.outputs.major-minor }}
+      python-version: ${{ steps.tags.outputs.python-version }}
+      python-version-major-minor: ${{ steps.tags.outputs.python-version-major-minor }}
       git-version: ${{ steps.tags.outputs.git-version }}
 
     steps:
