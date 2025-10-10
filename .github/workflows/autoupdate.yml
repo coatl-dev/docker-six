@@ -32,42 +32,31 @@ jobs:
           sed -i "s/ENV PYTHON312_VERSION=.*/ENV PYTHON312_VERSION=$python_version/" Dockerfile
           sed -E -i "s/3\.12\.[0-9]+/$python_version/g" README.md
 
-      - name: Fetch latest Python release
-        if: ${{ github.event.schedule == '0 18 10 2-12/2 *' || github.event_name == 'workflow_dispatch' }}
+      - name: Fetch latest uv release
+        if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
         run: |
-          python_version=$(curl -s https://www.python.org/ftp/python/ | grep -oP '3\.13\.\d+/' | uniq | sort -V | tail -n 1 | tr -d '/')
+          uv_version=$(git ls-remote --tags https://github.com/astral-sh/uv | grep -o 'refs/tags/[0-9]*\.[0-9]*\.[0-9]*$' | sort -V | tail -n1 | sed 's/refs\/tags\///')
 
-          echo "python: $python_version"
+          echo "uv_version: $uv_version"
 
-          sed -i "s/ENV PYTHON_VERSION=.*/ENV PYTHON_VERSION=$python_version/" Dockerfile
-          sed -E -i "s/3\.13\.[0-9]+/$python_version/g" README.md
+          sed -i "s/ENV UV_VERSION=.*/ENV UV_VERSION=$uv_version/" Dockerfile
 
-      - name: Update requirements
+      - name: Update Python 3.12 requirements
         if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
         uses: coatl-dev/actions/uv-pip-compile-upgrade@v5
         with:
           path: requirements/3.12/pip.txt
           python-version: '3.12'
 
-      - name: Update requirements
-        if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
-        uses: coatl-dev/actions/uv-pip-compile-upgrade@v5
-        with:
-          path: requirements/pip.txt
-          python-version: '3.13'
-
       - name: Extract package versions and update Dockerfile
         if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
         run: |
           pip312=$(grep '^pip==' requirements/3.12/pip.txt | cut -d '=' -f 3)
-          pip=$(grep '^pip==' requirements/pip.txt | cut -d '=' -f 3)
 
           echo "Extracted versions:"
           echo "pip3.12: $pip312"
-          echo "pip: $pip"
 
           sed -i "s/ENV PYTHON312_PIP_VERSION=.*/ENV PYTHON312_PIP_VERSION=$pip312/" Dockerfile
-          sed -i "s/ENV PYTHON_PIP_VERSION=.*/ENV PYTHON_PIP_VERSION=$pip/" Dockerfile
 
       - name: Detect changes
         id: git-diff
