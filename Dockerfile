@@ -296,6 +296,7 @@ RUN set -eux; \
     \
     bash /tmp/install-uv.sh; \
     rm -f /tmp/install-uv.sh
+ENV PATH="/root/.local/bin:$PATH"
 
 # link Python libraries
 RUN set -eux; \
