@@ -25,11 +25,11 @@ jobs:
         id: tags
         run: |
           # Extract the Python version from the Dockerfile
-          PYTHON_VERSION=$(grep 'ENV PYTHON_VERSION' Dockerfile | cut -d '=' -f 2)
+          PYTHON_VERSION=$(grep 'ENV PYTHON312_VERSION' Dockerfile | cut -d '=' -f 2)
           echo "PYTHON_VERSION=${PYTHON_VERSION}"
           # Trim the version to the first two segments (major.minor)
           PYTHON_VERSION_MAJOR_MINOR=$(echo $PYTHON_VERSION | cut -d'.' -f1-2)
-          echo "MAJOR_MINOR=${MAJOR_MINOR}"
+          echo "PYTHON_VERSION_MAJOR_MINOR=${PYTHON_VERSION_MAJOR_MINOR}"
           # Export the extracted version to GITHUB_OUTPUT
           echo "python-version=${VERSION}" >> $GITHUB_OUTPUT
           echo "python-version-major-minor=${PYTHON_VERSION_MAJOR_MINOR}" >> $GITHUB_OUTPUT
