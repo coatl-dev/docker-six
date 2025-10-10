@@ -49,7 +49,7 @@ jobs:
         displayName: Change owner
 
       - script: |
-          uv python install 3.13
+          uv python install 3.14
         displayName: Install Python with uv
 
       - script: |
@@ -71,13 +71,13 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install Python with uv
         run: |
-          python -m pip install tox
+          uv python install 3.14
 
       - name: Run tests
         run: |
-          tox
+          uvx tox
 ```
 
 <!-- External links -->
