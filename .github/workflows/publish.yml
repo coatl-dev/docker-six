@@ -13,8 +13,8 @@ jobs:
   tagger:
     runs-on: blacksmith-2vcpu-ubuntu-2404
     outputs:
-      python-version: ${{ steps.tags.outputs.python-version }}
-      python-version-major-minor: ${{ steps.tags.outputs.python-version-major-minor }}
+      python312-version: ${{ steps.tags.outputs.python312-version }}
+      python312-version-major-minor: ${{ steps.tags.outputs.python312-version-major-minor }}
       git-version: ${{ steps.tags.outputs.git-version }}
 
     steps:
@@ -25,14 +25,14 @@ jobs:
         id: tags
         run: |
           # Extract the Python version from the Dockerfile
-          PYTHON_VERSION=$(grep 'ENV PYTHON312_VERSION' Dockerfile | cut -d '=' -f 2)
-          echo "PYTHON_VERSION=${PYTHON_VERSION}"
+          PYTHON312_VERSION=$(grep 'ENV PYTHON312_VERSION' Dockerfile | cut -d '=' -f 2)
+          echo "PYTHON312_VERSION=${PYTHON312_VERSION}"
           # Trim the version to the first two segments (major.minor)
-          PYTHON_VERSION_MAJOR_MINOR=$(echo $PYTHON_VERSION | cut -d'.' -f1-2)
-          echo "PYTHON_VERSION_MAJOR_MINOR=${PYTHON_VERSION_MAJOR_MINOR}"
+          PYTHON312_VERSION_MAJOR_MINOR=$(echo $PYTHON312_VERSION | cut -d'.' -f1-2)
+          echo "PYTHON312_VERSION_MAJOR_MINOR=${PYTHON312_VERSION_MAJOR_MINOR}"
           # Export the extracted version to GITHUB_OUTPUT
-          echo "python-version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "python-version-major-minor=${PYTHON_VERSION_MAJOR_MINOR}" >> $GITHUB_OUTPUT
+          echo "python312-version=${PYTHON312_VERSION}" >> $GITHUB_OUTPUT
+          echo "python312-version-major-minor=${PYTHON312_VERSION_MAJOR_MINOR}" >> $GITHUB_OUTPUT
           # Extract the Git version from the Dockerfile
           GIT_VERSION=$(grep 'ENV GIT_VERSION' Dockerfile | cut -d '=' -f 2)
           echo "GIT_VERSION=${GIT_VERSION}"
@@ -47,9 +47,9 @@ jobs:
       quay-repo: quay.io/coatldev/six
       quay-username: ${{ vars.QUAY_USERNAME }}
       metadata-tags: |
-        type=raw,value=${{ needs.tagger.outputs.python-version }}
-        type=raw,value=${{ needs.tagger.outputs.python-version-major-minor }}
-        type=raw,value=${{ needs.tagger.outputs.python-version }}-${{ needs.tagger.outputs.git-version }}
+        type=raw,value=${{ needs.tagger.outputs.python312-version }}
+        type=raw,value=${{ needs.tagger.outputs.python312-version-major-minor }}
+        type=raw,value=${{ needs.tagger.outputs.python312-version }}-${{ needs.tagger.outputs.git-version }}
         type=raw,value=latest,enable={{is_default_branch}}
     secrets:
       dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
