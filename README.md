@@ -41,16 +41,15 @@ jobs:
     pool:
       vmImage: ubuntu-latest
 
-    container: coatldev/six:latest # or quay.io/coatldev/six:latest
+    container:
+      image: coatldev/six:latest # or quay.io/coatldev/six:latest
+      env:
+        UV_PYTHON: '3.14'
 
     steps:
       - script: |
           sudo chown -R $(whoami):$(id -ng) "${PYTHON_ROOT}"
         displayName: Change owner
-
-      - script: |
-          uv python install 3.14
-        displayName: Install Python with uv
 
       - script: |
           uvx tox
@@ -65,15 +64,14 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container: coatldev/six:latest # or quay.io/coatldev/six:latest
+    container:
+      image: coatldev/six:latest # or quay.io/coatldev/six:latest
+      env:
+        UV_PYTHON: '3.14'
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Install Python with uv
-        run: |
-          uv python install 3.14
 
       - name: Run tests
         run: |
