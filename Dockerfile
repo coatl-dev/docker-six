@@ -290,13 +290,12 @@ ENV PATH="${PYTHON_ROOT}/3.12/bin:${PYTHON_ROOT}/2.7/bin:$PATH"
 
 # Install uv
 ENV UV_VERSION=0.9.3
-ENV UV_DISABLE_UPDATE=1
+ENV UV_INSTALL_DIR="/usr/local/bin"
 ADD https://astral.sh/uv/${UV_VERSION}/install.sh /tmp/install-uv.sh
 RUN set -eux; \
     \
     bash /tmp/install-uv.sh; \
     rm -f /tmp/install-uv.sh
-ENV PATH="/root/.local/bin:$PATH"
 
 # link Python libraries
 RUN set -eux; \
