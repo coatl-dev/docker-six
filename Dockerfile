@@ -74,7 +74,7 @@ RUN set -eux; \
 
 FROM builder AS git-builder
 
-ENV GIT_VERSION=2.51.2
+ENV GIT_VERSION=2.52.0
 
 WORKDIR /tmp
 
@@ -289,7 +289,7 @@ COPY --from=python312-builder /etc/ld.so.conf.d/python3.12.conf /etc/ld.so.conf.
 ENV PATH="${PYTHON_ROOT}/3.12/bin:${PYTHON_ROOT}/2.7/bin:$PATH"
 
 # Install uv
-ENV UV_VERSION=0.9.9
+ENV UV_VERSION=0.9.10
 ENV UV_INSTALL_DIR="/usr/local/bin"
 ADD https://astral.sh/uv/${UV_VERSION}/install.sh /tmp/install-uv.sh
 RUN set -eux; \
