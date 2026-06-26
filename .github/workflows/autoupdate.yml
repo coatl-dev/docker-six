@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Fetch latest Git release
         if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
@@ -43,7 +43,7 @@ jobs:
 
       - name: Update Python 3.12 requirements
         if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
-        uses: coatl-dev/actions/uv-pip-compile-upgrade@v5
+        uses: coatl-dev/actions/uv-pip-compile-upgrade@25b15c8e562e6c9e509bd29ea0b0da5ec6b26a1f # v7.0.4
         with:
           path: requirements/3.12/pip.txt
           python-version: '3.12'
@@ -60,12 +60,12 @@ jobs:
 
       - name: Detect changes
         id: git-diff
-        uses: coatl-dev/actions/simple-git-diff@v5
+        uses: coatl-dev/actions/simple-git-diff@25b15c8e562e6c9e509bd29ea0b0da5ec6b26a1f # v7.0.4
 
       - name: Import GPG key
         if: ${{ steps.git-diff.outputs.diff == 'true' }}
         id: gpg-import
-        uses: coatl-dev/actions/gpg-import@v5
+        uses: coatl-dev/actions/gpg-import@25b15c8e562e6c9e509bd29ea0b0da5ec6b26a1f # v7.0.4
         with:
           passphrase: ${{ secrets.COATL_BOT_GPG_PASSPHRASE }}
           private-key: ${{ secrets.COATL_BOT_GPG_PRIVATE_KEY }}
@@ -80,6 +80,6 @@ jobs:
 
       - name: Create Pull Request
         if: ${{ steps.git-diff.outputs.diff == 'true' }}
-        uses: coatl-dev/actions/pr-create@v5
+        uses: coatl-dev/actions/pr-create@25b15c8e562e6c9e509bd29ea0b0da5ec6b26a1f # v7.0.4
         with:
           gh-token: ${{ secrets.COATL_BOT_GH_TOKEN }}
