@@ -52,6 +52,7 @@ RUN set -eux; \
     apt-get update --quiet; \
     apt-get install --yes --no-install-recommends \
         autoconf \
+        cargo \
         gettext \
         libbz2-dev \
         libcurl4-gnutls-dev \
