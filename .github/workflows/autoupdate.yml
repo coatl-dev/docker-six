@@ -43,7 +43,7 @@ jobs:
 
       - name: Update Python 3.12 requirements
         if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
-        uses: coatl-dev/actions/uv-pip-compile-upgrade@25b15c8e562e6c9e509bd29ea0b0da5ec6b26a1f # v7.0.4
+        uses: coatl-dev/actions/uv-pip-compile-upgrade@05b877c5c64fc3ddb9e87f47400311ebf64fe9d5 # v7.0.9
         with:
           path: requirements/3.12/pip.txt
           python-version: '3.12'
