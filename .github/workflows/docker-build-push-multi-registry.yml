@@ -104,7 +104,7 @@ jobs:
           password: ${{ secrets.quay-password }}
 
       - name: Setup Docker Builder
-        uses: useblacksmith/setup-docker-builder@5fe3b77775f1dd55595beb998036fe1f2cf47118 # v1.10.0
+        uses: useblacksmith/setup-docker-builder@6ff44f8e5255f9d8aa31ef22f7e57a2d926b7da0 # v1.11.0
 
       - name: Build and push by digest
         id: build
