@@ -43,7 +43,7 @@ jobs:
 
       - name: Update Python 3.12 requirements
         if: ${{ github.event.schedule == '0 18 14,28 * *' || github.event_name == 'workflow_dispatch' }}
-        uses: coatl-dev/actions/uv-pip-compile-upgrade@40ccdf1f2742b1c19464d7997af84bbb249f89ca # v7.0.10
+        uses: coatl-dev/actions/uv-pip-compile-upgrade@eaeed3dde61077bd254f6c8b9b523b0a6b182e19 # v7.0.11
         with:
           path: requirements/3.12/pip.txt
           python-version: '3.12'
@@ -60,12 +60,12 @@ jobs:
 
       - name: Detect changes
         id: git-diff
-        uses: coatl-dev/actions/simple-git-diff@40ccdf1f2742b1c19464d7997af84bbb249f89ca # v7.0.10
+        uses: coatl-dev/actions/simple-git-diff@eaeed3dde61077bd254f6c8b9b523b0a6b182e19 # v7.0.11
 
       - name: Import GPG key
         if: ${{ steps.git-diff.outputs.diff == 'true' }}
         id: gpg-import
-        uses: coatl-dev/actions/gpg-import@40ccdf1f2742b1c19464d7997af84bbb249f89ca # v7.0.10
+        uses: coatl-dev/actions/gpg-import@eaeed3dde61077bd254f6c8b9b523b0a6b182e19 # v7.0.11
         with:
           passphrase: ${{ secrets.COATL_BOT_GPG_PASSPHRASE }}
           private-key: ${{ secrets.COATL_BOT_GPG_PRIVATE_KEY }}
@@ -80,6 +80,6 @@ jobs:
 
       - name: Create Pull Request
         if: ${{ steps.git-diff.outputs.diff == 'true' }}
-        uses: coatl-dev/actions/pr-create@40ccdf1f2742b1c19464d7997af84bbb249f89ca # v7.0.10
+        uses: coatl-dev/actions/pr-create@eaeed3dde61077bd254f6c8b9b523b0a6b182e19 # v7.0.11
         with:
           gh-token: ${{ secrets.COATL_BOT_GH_TOKEN }}
