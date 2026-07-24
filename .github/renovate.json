@@ -3,7 +3,7 @@
   "extends": [
     "config:recommended",
     ":disableDependencyDashboard",
-    ":semanticCommitTypeAll(refactor)"
+    ":semanticCommitTypeAll(ci)"
   ],
   "enabledManagers": ["github-actions"]
 }
