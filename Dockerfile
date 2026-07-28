@@ -290,7 +290,7 @@ COPY --from=python312-builder /etc/ld.so.conf.d/python3.12.conf /etc/ld.so.conf.
 ENV PATH="${PYTHON_ROOT}/3.12/bin:${PYTHON_ROOT}/2.7/bin:$PATH"
 
 # Install uv
-ENV UV_VERSION=0.11.28
+ENV UV_VERSION=0.12.0
 ENV UV_INSTALL_DIR="/usr/local/bin"
 ADD https://astral.sh/uv/${UV_VERSION}/install.sh /tmp/install-uv.sh
 RUN set -eux; \
