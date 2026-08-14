@@ -248,7 +248,7 @@ RUN set -eux; \
     ;
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON312_PIP_VERSION=26.1.2
+ENV PYTHON312_PIP_VERSION=26.2.1
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL=https://raw.githubusercontent.com/pypa/get-pip/HEAD/public/get-pip.py
 
@@ -290,7 +290,7 @@ COPY --from=python312-builder /etc/ld.so.conf.d/python3.12.conf /etc/ld.so.conf.
 ENV PATH="${PYTHON_ROOT}/3.12/bin:${PYTHON_ROOT}/2.7/bin:$PATH"
 
 # Install uv
-ENV UV_VERSION=0.12.0
+ENV UV_VERSION=0.12.4
 ENV UV_INSTALL_DIR="/usr/local/bin"
 ADD https://astral.sh/uv/${UV_VERSION}/install.sh /tmp/install-uv.sh
 RUN set -eux; \
