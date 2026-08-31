@@ -36,7 +36,7 @@ jobs:
 
   build:
     needs: tagger
-    uses: ./.github/workflows/docker-build-push-multi-registry.yml
+    uses: $/.github/workflows/docker-build-push-multi-registry.yml
     with:
       dockerhub-repo: coatldev/six
       dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
